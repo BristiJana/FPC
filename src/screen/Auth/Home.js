@@ -10,6 +10,7 @@ import {
   ImageBackground,
   Image,Animated, Easing,ActivityIndicator
 } from 'react-native';
+import { useRoute } from '@react-navigation/native';
 import TextTicker from 'react-native-text-ticker';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -31,6 +32,8 @@ const Home = (props) => {
   const [showPopup, setShowPopup] = useState(false);
   const [lisdata, setlisdata] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  
   const translateX = useRef(new Animated.Value(-300)).current;
 
   const lisUrl = 'https://micro.satyukt.com/homepage?key=HsNrsgMzEJYshSvRWfoMUvmDcyRqNPFUH1AA_-HVvek=';
@@ -109,7 +112,7 @@ const Home = (props) => {
         keyExtractor={(item) => item.FarmID}
         renderItem={({ item }) => (
          <TouchableOpacity onPress={()=>{props.navigation.navigate("Report", {
-          FarmID: item.FarmID,})}}>
+          FarmID: item.FarmID})}}>
           <View style={styles.farmItem}>
             <View style={styles.farmitemcontainer}>
            

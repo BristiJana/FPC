@@ -5,7 +5,6 @@ import Geolocation from 'react-native-geolocation-service';
 import axios from 'axios';
 
 
-
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CustomDropdown from '../Other/CustomDropdown';
 import DateOfBirthComponent from '../Other/DateOfBirthComponent';
@@ -64,6 +63,7 @@ setdtVal(newValue);
   const [showPopup1, setShowPopup1] = useState(false);
   const [selectedValue, setSelectedValue] = useState('option1');
   const [predictions, setPredictions] = useState([]);
+  
   const fincord = coordinates.map((coord) => [parseFloat(coord.longitude.toFixed(14)),
     parseFloat(coord.latitude.toFixed(15))]);
     const firstCoordinate = fincord[0];
@@ -76,14 +76,15 @@ fincord.push(firstCoordinate);
 
   const handleItemPress = (item) => {
     setSearchQuery(item.place_name);
-    setIsFlatListVisible(!isFlatListVisible); // Hide the FlatList when an item is clicked
+    setIsFlatListVisible(!isFlatListVisible); 
   };
 
   const handleNext = async () => {
     setShowPopup1(true);
     const finUrl='https://micro.satyukt.com/postjson2?key=HsNrsgMzEJYshSvRWfoMUvmDcyRqNPFUH1AA_-HVvek=&name='+userName+'&coordinates='+fincordJson+'&croptype='+crpval+'&phone_num='+phoneNumber+'&category=farm'
     console.log(finUrl)
-    
+   
+
     try {
       const response = await axios.get(finUrl);
       
@@ -852,7 +853,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DrawPage;
+export  default DrawPage;
 
 
 

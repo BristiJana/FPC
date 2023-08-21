@@ -52,7 +52,7 @@ const Report = (props) => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View key={item.id} >
-          <Collapse val={item} farm={FarmID}/>
+          <Collapse val={item} farm={FarmID} nav={props.navigation}/>
           <View style={styles.colapitem}></View></View>
          
         )}
