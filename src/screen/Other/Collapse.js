@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet,FlatList,Image ,Dimensions,Modal} from 'react-native';
+import { View, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet,FlatList,Image ,Dimensions,Modal, ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LineChart } from 'react-native-chart-kit';
 import axios from 'axios';
 import Carousel from 'react-native-snap-carousel';
 import { Button } from 'react-native-paper';
 
-
+import Soilee from './Soilee'
 
 import DatePicker from 'react-native-date-picker';
 
@@ -72,11 +72,11 @@ const[display,setDisplay]=useState(<></>);
     }
     else if(val===6)
     {
-      alert('Crop Health')
+      handlecrpress(props.farm)
     }
     else if(val===7)
     {
-      alert('LSWI')
+      handlelspress(props.farm)
     }
     else if(val===8)
     {
@@ -94,6 +94,8 @@ const[display,setDisplay]=useState(<></>);
     {setDisplay(handlemrriitempress());
     }
   }
+
+
   const handleirriitempress=  ()=>{
     
     return(<View style={{textAlign:'center',alignItems:'center',alignContent:'center'}}><Text style={{fontWeight:'bold', fontSize:16,color:'grey', textAlign:'center'}}>Farm data under process!</Text></View>)
@@ -146,182 +148,84 @@ const[display,setDisplay]=useState(<></>);
       
       try {
         const response = await axios.get(soilUrl);
-        console.log(response.data)
-        setSoildata(response.data);
-        setDisplay(handleitemsoilm());
- 
+      console.log(response.data)
 
-      } catch (error) {
-        alert(`Error fetching data: ${error}`);
-      }
-
+      setTimeout(() => {
+        if (response.data !== undefined) {
+          console.log("Data received, setting state...");
+          
+          setDisplay(<Soilee soildata={response.data} />);
+        } else {
+          console.log("Data is undefined");
+          setDisplay(<></>)
+        }
+      }, 8000); // Wait for 2000 milliseconds (adjust as needed)
+    } catch (error) {
+      alert(`Error fetching data: ${error}`);
+      setDisplay(<></>);
+    }
   
   }
 
-
-  const handleDateSelect = date => {
-    setSelectedDate(date);
-    // Replace this with your logic to get the corresponding image URL based on the selected date
-    // For now, let's assume you have an array of image URLs stored in 'imageUrlsByDate'
-    const imageUrlByDate = {};
-    soildata.forEach(data => {
-      const prevdate=data.Date
-      const date = new Date(prevdate);
-  const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-
-     
-      imageUrlByDate[formattedDate] = data.png.sm; 
-    });
+  const handlecrpress= async (passfarm)=>{
+    
    
-    const formattedDate = date.toISOString().split('T')[0]; // Convert date to 'YYYY-MM-DD' format
-    setSelectedImageUrl(imageUrlByDate[formattedDate] || null);
-  };
-  
-
-  const handlesmpop=()=>{
-
-
-  }
-  const handleitemsoilm=()=>
-  {
+    const soilUrl= 'https://micro.satyukt.com/api/info?key=HsNrsgMzEJYshSvRWfoMUvmDcyRqNPFUH1AA_-HVvek=&plotName='+passfarm
+      console.log(soilUrl)
     
-    const sldata = {
-      labels: soildata.map((value)=>(value.Date)),
-      datasets: [
-        {
-          data: [50, 70, 65, 80, 85, 90],
-          color: (opacity = 1) => `rgba(0, 255, 0, ${opacity})`, 
-          strokeWidth: 2,
-        },
-        
-        
-      ],
-    };
-  
-  
-       
-    const sz=soildata.length-1;
-    const url=soildata[sz].png
-    // const urlag=soildata[sz].zonalStats
-    const srcimg=url.sm
-    const curr=soildata[sz].Date
-    const dateee = new Date(curr);
-    const formattedDateee = `${dateee.getFullYear()}-${String(dateee.getMonth() + 1).padStart(2, '0')}-${String(dateee.getDate()).padStart(2, '0')}`;
-    console.log(srcimg)
-    
-    const last6Objects = soildata.slice(-6);
-    
-    const renderCard = ({ item }) =>{
       
-      const urli=item.png
-    // const urlag=soildata[sz].zonalStats
-    const itimg=urli.sm
-    const dtr=item.Date
-    const dtre = new Date(dtr);
-    const ftr = `${dtre.getFullYear()}-${String(dtre.getMonth() + 1).padStart(2, '0')}-${String(dtre.getDate()).padStart(2, '0')}`;
+      try {
+        const response = await axios.get(soilUrl);
+      console.log(response.data)
+
+      setTimeout(() => {
+        if (response.data !== undefined) {
+          console.log("Data received, setting state...");
+          
+          setDisplay(<Soilee soildata={response.data} />);
+        } else {
+          console.log("Data is undefined");
+          setDisplay(<></>)
+        }
+      }, 8000); // Wait for 2000 milliseconds (adjust as needed)
+    } catch (error) {
+      alert(`Error fetching data: ${error}`);
+      setDisplay(<></>);
+    }
+  
+  }
+
+
+  const handlelspress= async (passfarm)=>{
+    
    
-     return (
-      <View style={styles.card}>
-        
-        <Text style={{marginBottom:5,color:'black'}}>{ftr}</Text>
-        {itimg =='None'?(<Text style={{color:"black",textAlign:'center',alignSelf:"center"}}>Nothing to display</Text>):(<Image source={{ uri: itimg }} style={{ width:120,height:120}} />)}
-        {/* Add more Text components for other key values */}
-      </View>
-    );}
+    const soilUrl= 'https://micro.satyukt.com/api/info?key=HsNrsgMzEJYshSvRWfoMUvmDcyRqNPFUH1AA_-HVvek=&plotName='+passfarm
+      console.log(soilUrl)
     
-    return (<>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-      <TouchableOpacity onPress={() => setShowPicker(!showPicker)}>
-      <Icon name="calendar" style={styles.calIcon} />
-      </TouchableOpacity>
-      <Text style={{ color:"black",marginLeft:20,marginTop:3}}>{formattedDateee}</Text>
-      <TouchableOpacity onPress={() => setShowsmPopup(true)}>
-      <Icon name="ellipsis-v" style={{ marginTop:1,
-    
-    fontSize: 25, 
-    color: 'green',marginLeft:160}} /></TouchableOpacity>
-    
-    </View>
-      {showPicker && (
-        
-       
-       
-     
-        <DatePicker
-        date={selectedDate}
-        mode="date"
-        style={styles.datePicker}
-        onDateChange={handleDateSelect}
-      />
-      )}
-       {selectedImageUrl ? (
-         selectedImageUrl =='None'?(<Text style={{color:"black",textAlign:'center',alignSelf:"center", marginTop:20}}>Nothing to display</Text>):(<Image source={{ uri: selectedImageUrl }} style={{ width: 300, height: 200 ,marginTop:20}} />)
-        ) : (
-          <View style={{flex: 1,justifyContent: 'center',alignItems: 'center',alignContent:'center',marginTop:20}}>
-        
-     {srcimg =='None'?(<Text style={{color:"black",textAlign:'center',alignSelf:"center"}}>Nothing to display</Text>):(<Image source={{ uri: srcimg }} style={{ width:300,height:200}} />)}
       
-    </View>
-        )}
-       {showsmPopup && (
+      try {
+        const response = await axios.get(soilUrl);
+      console.log(response.data)
+
+      setTimeout(() => {
+        if (response.data !== undefined) {
+          console.log("Data received, setting state...");
           
-          <Modal animationType="slide" transparent visible={showsmPopup}>
-           {/* Add the BlurredOverlay component here */}
-           
-          <View style={styles.popupContainer}>
-         <View style={styles.horizontalLine}>
-            <Text style={{color:"black",fontWeight:"bold",fontSize:15}}>Previous 6-dates data preview</Text>
-          <TouchableOpacity style={styles.closeButton} onPress={() => setShowsmPopup(false)}>
-            <Icon name="times" size={22} color="red" />
-          </TouchableOpacity></View>
-           
-           <View style={{textAlign:'center',justifyContent:"center",alignItems:"center",marginTop:20}}>
-      
-            {/* Add your dropdown date input and other elements here */}
-            <FlatList
-        data={last6Objects}
-        renderItem={renderCard}
-        
-        numColumns={2} 
-        columnWrapperStyle={styles.row} 
-      />
-          
-            
-           </View>
-          </View>
-        </Modal>
-          
-      )}
-      <View style={{marginTop:20}}>
-      <Text style={{color:'green',fontWeight:'bold',fontSize:18,marginBottom:20}}>Chart</Text>
-    
-        
-         
-            <LineChart
-              data={sldata}
-              width={300} // Adjust this width as needed
-              height={200}
-              yAxisLabel={'$'}
-              chartConfig={{
-                backgroundGradientFrom: '#f0f0f0',
-                backgroundGradientTo: '#f0f0f0',
-                decimalPlaces: 2,
-                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-              }}
-              bezier
-              style={{ borderRadius: 16 }}
-              decorator={() => null}
-             
-            />
-          
-     
-    
-      </View>
-    </View>
- </>
-  );
+          setDisplay(<Soilee soildata={response.data} />);
+        } else {
+          console.log("Data is undefined");
+          setDisplay(<></>)
+        }
+      }, 8000); // Wait for 2000 milliseconds (adjust as needed)
+    } catch (error) {
+      alert(`Error fetching data: ${error}`);
+      setDisplay(<></>);
+    }
+  
   }
+
+  
+  
   const handleitempesdis= ()=>
   {
     
