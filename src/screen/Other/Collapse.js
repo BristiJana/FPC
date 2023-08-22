@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet,FlatList,Image ,Dimensions} from 'react-native';
+import { View, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet,FlatList,Image ,Dimensions,Modal} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LineChart } from 'react-native-chart-kit';
 import axios from 'axios';
 import Carousel from 'react-native-snap-carousel';
 import { Button } from 'react-native-paper';
+
+
+
+import DatePicker from 'react-native-date-picker';
 
 const images = [
   { id: 1, source: require('../../assets/crop.png')},
@@ -17,14 +21,27 @@ const images = [
 
 // Now you can use the finUrl in your CollapsePage
 
+
 const { width } = Dimensions.get('window');
 const Collapse = (props) => {
+
+  
+ 
+
+  
+
+
   const [isExpanded, setIsExpanded] = useState(false);
 const [wedata,setWedata]=useState([]);
 const[pesdata,setPesdata]=useState([]);
 const[soildata,setSoildata]=useState([]);
 
 
+const [showsmPopup, setShowsmPopup] = useState(false);
+
+const [selectedDate, setSelectedDate] = useState(new Date());
+const [selectedImageUrl, setSelectedImageUrl] = useState(null);
+const[showPicker,setShowPicker]=useState(false)
 const[display,setDisplay]=useState(<></>);
   const toggleDropdown = () => {
     handlefunction(props.val.id);
@@ -51,7 +68,7 @@ const[display,setDisplay]=useState(<></>);
     }
     else if(val===5)
     {
-      handleslpress(props.farm);
+      handleslpress(props.farm)
     }
     else if(val===6)
     {
@@ -141,23 +158,169 @@ const[display,setDisplay]=useState(<></>);
   
   }
 
+
+  const handleDateSelect = date => {
+    setSelectedDate(date);
+    // Replace this with your logic to get the corresponding image URL based on the selected date
+    // For now, let's assume you have an array of image URLs stored in 'imageUrlsByDate'
+    const imageUrlByDate = {};
+    soildata.forEach(data => {
+      const prevdate=data.Date
+      const date = new Date(prevdate);
+  const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
+     
+      imageUrlByDate[formattedDate] = data.png.sm; 
+    });
+   
+    const formattedDate = date.toISOString().split('T')[0]; // Convert date to 'YYYY-MM-DD' format
+    setSelectedImageUrl(imageUrlByDate[formattedDate] || null);
+  };
+  
+
+  const handlesmpop=()=>{
+
+
+  }
   const handleitemsoilm=()=>
   {
+    
+    const sldata = {
+      labels: soildata.map((value)=>(value.Date)),
+      datasets: [
+        {
+          data: [50, 70, 65, 80, 85, 90],
+          color: (opacity = 1) => `rgba(0, 255, 0, ${opacity})`, 
+          strokeWidth: 2,
+        },
+        
+        
+      ],
+    };
+  
+  
+       
     const sz=soildata.length-1;
     const url=soildata[sz].png
-    const urlag=soildata[sz].zonalStats
+    // const urlag=soildata[sz].zonalStats
     const srcimg=url.sm
+    const curr=soildata[sz].Date
+    const dateee = new Date(curr);
+    const formattedDateee = `${dateee.getFullYear()}-${String(dateee.getMonth() + 1).padStart(2, '0')}-${String(dateee.getDate()).padStart(2, '0')}`;
     console.log(srcimg)
     
-    return (
-     
-      <View style={{flex: 1,justifyContent: 'center',alignItems: 'center',alignContent:'center'}}>
-        
-        {srcimg =='None'?(<Text style={{color:"black",textAlign:'center',alignSelf:"center"}}>Nothing to display</Text>):(<Image source={{ uri: srcimg }} style={{ width:300,height:200}} />)}
-      
-      </View>
-    );
+    const last6Objects = soildata.slice(-6);
     
+    const renderCard = ({ item }) =>{
+      
+      const urli=item.png
+    // const urlag=soildata[sz].zonalStats
+    const itimg=urli.sm
+    const dtr=item.Date
+    const dtre = new Date(dtr);
+    const ftr = `${dtre.getFullYear()}-${String(dtre.getMonth() + 1).padStart(2, '0')}-${String(dtre.getDate()).padStart(2, '0')}`;
+   
+     return (
+      <View style={styles.card}>
+        
+        <Text style={{marginBottom:5,color:'black'}}>{ftr}</Text>
+        {itimg =='None'?(<Text style={{color:"black",textAlign:'center',alignSelf:"center"}}>Nothing to display</Text>):(<Image source={{ uri: itimg }} style={{ width:120,height:120}} />)}
+        {/* Add more Text components for other key values */}
+      </View>
+    );}
+    
+    return (<>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+      <TouchableOpacity onPress={() => setShowPicker(!showPicker)}>
+      <Icon name="calendar" style={styles.calIcon} />
+      </TouchableOpacity>
+      <Text style={{ color:"black",marginLeft:20,marginTop:3}}>{formattedDateee}</Text>
+      <TouchableOpacity onPress={() => setShowsmPopup(true)}>
+      <Icon name="ellipsis-v" style={{ marginTop:1,
+    
+    fontSize: 25, 
+    color: 'green',marginLeft:160}} /></TouchableOpacity>
+    
+    </View>
+      {showPicker && (
+        
+       
+       
+     
+        <DatePicker
+        date={selectedDate}
+        mode="date"
+        style={styles.datePicker}
+        onDateChange={handleDateSelect}
+      />
+      )}
+       {selectedImageUrl ? (
+         selectedImageUrl =='None'?(<Text style={{color:"black",textAlign:'center',alignSelf:"center", marginTop:20}}>Nothing to display</Text>):(<Image source={{ uri: selectedImageUrl }} style={{ width: 300, height: 200 ,marginTop:20}} />)
+        ) : (
+          <View style={{flex: 1,justifyContent: 'center',alignItems: 'center',alignContent:'center',marginTop:20}}>
+        
+     {srcimg =='None'?(<Text style={{color:"black",textAlign:'center',alignSelf:"center"}}>Nothing to display</Text>):(<Image source={{ uri: srcimg }} style={{ width:300,height:200}} />)}
+      
+    </View>
+        )}
+       {showsmPopup && (
+          
+          <Modal animationType="slide" transparent visible={showsmPopup}>
+           {/* Add the BlurredOverlay component here */}
+           
+          <View style={styles.popupContainer}>
+         <View style={styles.horizontalLine}>
+            <Text style={{color:"black",fontWeight:"bold",fontSize:15}}>Previous 6-dates data preview</Text>
+          <TouchableOpacity style={styles.closeButton} onPress={() => setShowsmPopup(false)}>
+            <Icon name="times" size={22} color="red" />
+          </TouchableOpacity></View>
+           
+           <View style={{textAlign:'center',justifyContent:"center",alignItems:"center",marginTop:20}}>
+      
+            {/* Add your dropdown date input and other elements here */}
+            <FlatList
+        data={last6Objects}
+        renderItem={renderCard}
+        
+        numColumns={2} 
+        columnWrapperStyle={styles.row} 
+      />
+          
+            
+           </View>
+          </View>
+        </Modal>
+          
+      )}
+      <View style={{marginTop:20}}>
+      <Text style={{color:'green',fontWeight:'bold',fontSize:18,marginBottom:20}}>Chart</Text>
+    
+        
+         
+            <LineChart
+              data={sldata}
+              width={300} // Adjust this width as needed
+              height={200}
+              yAxisLabel={'$'}
+              chartConfig={{
+                backgroundGradientFrom: '#f0f0f0',
+                backgroundGradientTo: '#f0f0f0',
+                decimalPlaces: 2,
+                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              }}
+              bezier
+              style={{ borderRadius: 16 }}
+              decorator={() => null}
+             
+            />
+          
+     
+    
+      </View>
+    </View>
+ </>
+  );
   }
   const handleitempesdis= ()=>
   {
@@ -383,7 +546,7 @@ const[display,setDisplay]=useState(<></>);
        </View>
     </>)
   }
-  return (
+  return (<>
     <View style={styles.container}>
       <TouchableOpacity onPress={toggleDropdown} style={styles.header}>
         <Text style={styles.headerText}>{props.val.value}</Text>
@@ -398,11 +561,67 @@ const[display,setDisplay]=useState(<></>);
         </TouchableWithoutFeedback>
       )}
     </View>
+   </>
   );
 };
 
 const styles = StyleSheet.create({
-  
+  buttonContainer:
+  {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginTop: 10,
+  } ,
+  row: {
+    justifyContent: 'space-between',
+  },
+  card: {
+   
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 4,
+    margin: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 3,
+    width:150,
+   
+  },
+  popupContainer: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    textAlign:'center',
+    justifyContent:'center',
+    alignItems:"center"
+  },
+  horizontalLine:{
+    borderBottomWidth:1,
+    borderBottomColor:'black',
+
+    width:'100%',
+    textAlign:'center',
+   justifyContent:'center',
+   alignItems:'center' 
+   
+  },
+  popupHeading: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color:'black'
+  },
+  closeButton: {
+    position: 'absolute',
+    
+    right: 10,
+    padding: 10,
+  },
+  datePicker:{
+    marginTop:20,
+    
+  },
   soilcontainer: {
     flex: 1,
     
@@ -498,6 +717,15 @@ paddingLeft:60
  borderRadius:10,
  marginBottom:8
   },
+  calIcon:{
+
+    
+    marginTop:1,
+    
+    fontSize: 25, // Adjust the font size here
+    color: 'red',
+  },
+
   mainwc1:
   {
     flexDirection: 'row',
