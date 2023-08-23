@@ -5,17 +5,14 @@ import { LineChart } from 'react-native-chart-kit';
 import axios from 'axios';
 import Carousel from 'react-native-snap-carousel';
 import { Button } from 'react-native-paper';
-
+import Weather from './Weather'
 import Soilee from './Soilee'
-
+import Crop from './Crop';
+import Lswi from './Lswi';
+import Pest from './Pest';
 import DatePicker from 'react-native-date-picker';
 
-const images = [
-  { id: 1, source: require('../../assets/crop.png')},
-  { id: 2, source: require('../../assets/crprr.png') },
-  { id: 3, source: require('../../assets/crps.png') },
-  // Add more image objects here
-];
+
 // Retrieve finUrl from localStorage
 
 
@@ -32,9 +29,6 @@ const Collapse = (props) => {
 
 
   const [isExpanded, setIsExpanded] = useState(false);
-const [wedata,setWedata]=useState([]);
-const[pesdata,setPesdata]=useState([]);
-const[soildata,setSoildata]=useState([]);
 
 
 const [showsmPopup, setShowsmPopup] = useState(false);
@@ -126,16 +120,26 @@ const[display,setDisplay]=useState(<></>);
 
       console.log(pestUrl)
     
-      
       try {
         const response = await axios.get(pestUrl);
-        console.log(response.data)
-       setPesdata(response.data);
-       setDisplay(handleitempesdis());
+      console.log(response.data)
 
-      } catch (error) {
-        alert(`Error fetching data: ${error}`);
-      }
+      setTimeout(() => {
+        if (response.data !== undefined) {
+          console.log("Data received, setting state...");
+          
+          setDisplay(<Pest pesdata={response.data} nav={props.nav}/>);
+        } else {
+          console.log("Data is undefined");
+          setDisplay(<></>)
+        }
+      }, 5000); // Wait for 2000 milliseconds (adjust as needed)
+    } catch (error) {
+      alert(`Error fetching data: ${error}`);
+      setDisplay(<></>);
+    }
+      
+      
 
   
   }
@@ -159,7 +163,7 @@ const[display,setDisplay]=useState(<></>);
           console.log("Data is undefined");
           setDisplay(<></>)
         }
-      }, 8000); // Wait for 2000 milliseconds (adjust as needed)
+      }, 5000); // Wait for 2000 milliseconds (adjust as needed)
     } catch (error) {
       alert(`Error fetching data: ${error}`);
       setDisplay(<></>);
@@ -182,12 +186,12 @@ const[display,setDisplay]=useState(<></>);
         if (response.data !== undefined) {
           console.log("Data received, setting state...");
           
-          setDisplay(<Soilee soildata={response.data} />);
+          setDisplay(<Crop soildata={response.data} />);
         } else {
           console.log("Data is undefined");
           setDisplay(<></>)
         }
-      }, 8000); // Wait for 2000 milliseconds (adjust as needed)
+      }, 5000); // Wait for 2000 milliseconds (adjust as needed)
     } catch (error) {
       alert(`Error fetching data: ${error}`);
       setDisplay(<></>);
@@ -211,12 +215,12 @@ const[display,setDisplay]=useState(<></>);
         if (response.data !== undefined) {
           console.log("Data received, setting state...");
           
-          setDisplay(<Soilee soildata={response.data} />);
+          setDisplay(<Lswi soildata={response.data} />);
         } else {
           console.log("Data is undefined");
           setDisplay(<></>)
         }
-      }, 8000); // Wait for 2000 milliseconds (adjust as needed)
+      }, 5000); // Wait for 2000 milliseconds (adjust as needed)
     } catch (error) {
       alert(`Error fetching data: ${error}`);
       setDisplay(<></>);
@@ -226,78 +230,33 @@ const[display,setDisplay]=useState(<></>);
 
   
   
-  const handleitempesdis= ()=>
-  {
-    
-    const num=pesdata.length-1;
-    const renderItem = ({ item ,index}) => {
-      return (
-        <View style={styles.slide}>
-        <Image source={item} style={styles.image} />
-      </View>
-      );
-    };
-    
-      return(<View style={{alignContent:'center',alignItems:'center',textAlign:'center'}}>
-      {/* <Carousel
-        layout={'default'}
-        data={images}
-        renderItem={renderItem}
-        sliderWidth={width}
-        itemWidth={width}
-        loop={true}
-      /> */}
-      <Carousel
-              layout={'default'}
-              data={pesdata[0].Disease_img_url}
-              renderItem={renderItem}
-              sliderWidth={300}
-              itemWidth={300}
-            />
-            <View>
-              <View style={{borderBottomWidth:1,borderBottomColor:"grey",width:'100%',flex:1,paddingVertical: 10,}}>
-              <View style={{flexDirection:"row",justifyContent:"space-between"}}>
-              <Text style={{color:'blue',fontWeight:'bold',paddingRight:20}}>Date</Text>
-              <Text style={{color:'black',fontWeight:'bold'}}> {pesdata[0].Date}</Text></View></View>
-              <View style={{borderBottomWidth:1,borderBottomColor:"grey",width:'100%',flex:1,paddingVertical: 10,}}>
-              <View style={{flexDirection:"row",justifyContent:"space-between"}}>
-              <Text style={{color:'blue',fontWeight:'bold',paddingRight:20}}>Disease Name</Text>
-              <Text style={{color:'red',fontWeight:'bold'}}> {pesdata[0].Disease}</Text></View></View>
-              
-              <Text style={{color:'blue',fontWeight:'bold',paddingTop:10}}>Affected part</Text>
-              <Text style={{color:'black',width:100}}> {pesdata[0].Affected_Part}</Text>
-              <Text style={{color:'blue',fontWeight:'bold',paddingTop:10}}>Mode of Spread</Text>
-              <Text style={{color:'black',width:300}}> {pesdata[0].Mode_of_Spread}</Text>
-              <Text style={{color:'blue',fontWeight:'bold',paddingTop:10}}>Stage of Infection</Text>
-              <Text style={{color:'black',width:300}}> {pesdata[0].Stage_of_Infection}</Text>
-              <Text style={{color:'blue',fontWeight:'bold',paddingTop:10}}>Pathogen</Text>
-              <Text style={{color:'black',width:300}}> {pesdata[0].Pathogen}</Text>
-              <Text style={{color:'blue',fontWeight:'bold',paddingTop:10}}>Solution</Text>
-              <Text style={{color:'black',width:300}}> {pesdata[0].Solution}</Text>
-              
-            </View>
-            <TouchableOpacity onPress={() => props.nav.navigate('Pestdis',pesdata)}>
-            <Text style={{paddingTop:20,color:"blue",fontWeight:"bold"}}>Show {num} more Forewarning--</Text>
-       </TouchableOpacity>
-       </View>
-      )
-  }
+ 
   const handleweitempress= async (passfarm)=>{
     
     const WeatherUrl='https://micro.satyukt.com/weather/data/daypart?key=HsNrsgMzEJYshSvRWfoMUvmDcyRqNPFUH1AA_-HVvek=&farm_id='+passfarm;
 
       console.log(WeatherUrl)
     
-      
       try {
         const response = await axios.get(WeatherUrl);
-        console.log(response.data)
-       setWedata(response.data);
-       setDisplay(handleWeather());
+      console.log(response.data)
 
-      } catch (error) {
-        alert(`Error fetching data: ${error}`);
-      }
+      setTimeout(() => {
+        if (response.data !== undefined) {
+          console.log("Data received, setting state...");
+          
+          setDisplay(<Weather wedata={response.data} />);
+        } else {
+          console.log("Data is undefined");
+          setDisplay(<></>)
+        }
+      }, 5000); // Wait for 2000 milliseconds (adjust as needed)
+    } catch (error) {
+      alert(`Error fetching data: ${error}`);
+      setDisplay(<></>);
+    }
+  
+     
     
   
   }
@@ -342,114 +301,7 @@ const[display,setDisplay]=useState(<></>);
   
   }
 
-  const handleWeather=()=>{
   
-    
-   // Today's temperature
-  const temp=wedata[14].temperature;
-  const cltype=wedata[14].precipType;
-  const cldate=wedata[14].sunriseTimeLocal;
-  
-  const date = new Date(cldate);
-
-  const day = date.getDate();
-  const raindata = {
-    labels: wedata.map((value)=>(value.sunriseTimeLocal[5])),
-    datasets: [
-      {
-        data: wedata.map((value) => (value.qpf)),
-      },
-    ],
-  };
-  const weekdayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const months=["","Jan","Feb","March","Apr","May","June","July","Aug","Sep","Oct","Nov","Dec"];
-  const weekday = weekdayNames[date.getDay()-4];
-  const year = date.getFullYear();
-
-  console.log(date.getDay())
-
-  const formattedDate = `${day} ${weekday}, ${year}`;
- 
-
-    return(<>
-<View style={styles.wecontainer}>
-  <View style={styles.mainwc1}>
-  <View  style={styles.wc1}> 
-  <Text>Today</Text>
-      <Text style={styles.todayTempText}>{temp[8]}{temp[9]}` -{temp[1]}{temp[2]}`C</Text></View>
-     
-   
-    <View style={styles.wc1}>
-     <Image
-        source={cltype=='rain' ?  require('../../assets/crpr.jpg'):require('../../assets/crps.png')}
-        style={styles.climage}
-      />
-      <Text style={styles.dt}>{formattedDate}</Text>
-      </View> 
-      
-      </View><View  style={styles.secwc1}>
-      <Text>Humidity: {wedata[14].relativeHumidity}%</Text>
-      <Text style={{width:300, textAlign:'center'}}>{wedata[14].narrative}</Text>
-      </View>
-      <View  style={{paddingTop:15}}>
-        <Text style={styles.temhead}>Temperature</Text>
-        <View style={styles.scrollContainer}>
-       
-        <FlatList
-        
-       horizontal
-        data={wedata}
-       
-        renderItem={({ item }) => (<View style={{marginRight:20,textAlign:'center',alignItems:"center"}}>
-          
-            <Text >{item.temperature[8]}{item.temperature[9]}` -{item.temperature[1]}{item.temperature[2]}`C</Text>
-            <Image
-        source={item.precipType=='rain' ?  require('../../assets/crpr.jpg'):require('../../assets/crps.png')}
-        style={{width:40,
-          height:40,
-          backgroundColor:'skyblue',
-          
-          borderRadius:10,
-          marginBottom:8}}
-      />
-           <Text>{item.sunriseTimeLocal[8]}{item.sunriseTimeLocal[9]} { item.sunriseTimeLocal[5]=='0'?months[item.sunriseTimeLocal[6]]:item.sunriseTimeLocal[6]=='1'?months[11]:months[12]}</Text>
-           <Icon name="flag" size={12} color="black" />
-           <Text>{item.WindSpeed} m/s</Text>
-           </View>
-        )}
-      />
-      </View>
-      </View>
-
-      <View >
-        <Text style={styles.temhead}>Rainfall</Text>
-        <LineChart
-        data={raindata}
-        width={280}
-        height={120}
-        chartConfig={{
-          backgroundGradientFrom: 'skyblue',
-          backgroundGradientTo: 'skyblue',
-          decimalPlaces: 2,
-          color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-          propsForDots: {
-            r: '6',
-            strokeWidth: '2',
-          },
-          useShadowColorFromDataset: false, // Remove shadows for clarity
-          xAxisLabelPosition: 'TOP', // Position X-axis labels at the top
-          yAxisLabelPositionLeft: 'BOTTOM', // Position Y-axis labels below
-        }}
-        xLabelsOffset={-10} // Adjust the X-axis labels' offset if needed
-        fromZero // Start Y-axis from zero
-        yAxisInterval={10} // Adjust Y-axis interval as needed
-      />
-        
-      </View>
-       </View>
-    </>)
-  }
   return (<>
     <View style={styles.container}>
       <TouchableOpacity onPress={toggleDropdown} style={styles.header}>
