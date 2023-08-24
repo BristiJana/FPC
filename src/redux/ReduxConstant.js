@@ -9,3 +9,5 @@ export const DROPDOWN = 'DROPDOWN';
 
 export const LOGGEDIN="LoggedIn"
 export const LOGGEDOUT="LoggedOut"
+
+export const  SET_CONSTANT=' SET_CONSTANT'

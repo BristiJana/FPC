@@ -8,6 +8,7 @@ import {
   import Report from '../screen/Auth/Report';
   import Uploadpage from '../screen/Auth/Uploadpage';
   import Pestdis from '../screen/Auth/Pestdis'
+  import Farm from '../screen/Auth/Farm'
   const Stack = createStackNavigator();
   const Drawstack = ({navigation}) => {
     const navigationOptions = {
@@ -43,6 +44,12 @@ import {
         <Stack.Screen
           component={Pestdis}
           name="Pestdis"
+          options={{headerShown: false}}
+          navigation={navigation}
+        />
+        <Stack.Screen
+          component={Farm}
+          name="Farm"
           options={{headerShown: false}}
           navigation={navigation}
         />

@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet,FlatList,Image ,Dimensions,Modal, ScrollView} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { LineChart } from 'react-native-chart-kit';
-import axios from 'axios';
-import Carousel from 'react-native-snap-carousel';
-import { Button } from 'react-native-paper';
 
 const Weather=(props)=>{
   
     
-    const wedata=props.wedata;
+const wedata = [{"": "0", "WindSpeed": "10.3", "cloudCover": "100.0", "narrative": "Cloudy skies throughout the day with a chance of rain throughout the day.", "precipChance": "100.0", "precipType": "rain", "qpf": "1.099", "relativeHumidity": "97.5", "sunriseTimeLocal": "2023-06-30", "temperature": "[22.28, 21.17]", "thunderCategory": "Rain, Overcast", "validTimeUtc": "1688063400", "windDirection": "253.4"}, {"": "1", "WindSpeed": "10.3", "cloudCover": "99.9", "narrative": "Cloudy skies throughout the day with a chance of rain throughout the day.", "precipChance": "100.0", "precipType": "rain", "qpf": "1.156", "relativeHumidity": "97.5", "sunriseTimeLocal": "2023-07-01", "temperature": "[22.72, 21.56]", "thunderCategory": "Rain, Overcast", "validTimeUtc": "1688149800", "windDirection": "257.9"}, {"": "2", "WindSpeed": "9.4", "cloudCover": "99.9", "narrative": "Cloudy skies throughout the day with a chance of rain throughout the day.", "precipChance": "100.0", "precipType": "rain", "qpf": "0.889", "relativeHumidity": "97.8", "sunriseTimeLocal": "2023-07-02", "temperature": "[22.72, 21.33]", "thunderCategory": "Rain, Overcast", "validTimeUtc": "1688236200", "windDirection": "257.2"}, {"": "3", "WindSpeed": "7.4", "cloudCover": "99.6", "narrative": "Cloudy skies throughout the day with a chance of rain throughout the day.", "precipChance": "100.0", "precipType": "rain", "qpf": "0.513", "relativeHumidity": "97.9", "sunriseTimeLocal": "2023-07-03", "temperature": "[23.06, 21.44]", "thunderCategory": "Rain, Overcast", "validTimeUtc": "1688322600", "windDirection": "259.7"}, {"": "4", "WindSpeed": "8.3", "cloudCover": "100.0", "narrative": "Cloudy skies throughout the day with a chance of rain throughout the day.", "precipChance": "100.0", "precipType": "rain", "qpf": "0.527", "relativeHumidity": "97.9", "sunriseTimeLocal": "2023-07-04", "temperature": "[22.94, 21.22]", "thunderCategory": "Rain, Overcast", "validTimeUtc": "1688409000", "windDirection": "261.2"}, {"": "5", "WindSpeed": "9.8", "cloudCover": "100.0", "narrative": "Cloudy skies throughout the day with a chance of rain throughout the day.", "precipChance": "100.0", "precipType": "rain", "qpf": "1.285", "relativeHumidity": "98.3", "sunriseTimeLocal": "2023-07-05", "temperature": "[21.94, 21.17]", "thunderCategory": "Rain, Overcast", "validTimeUtc": "1688495400", "windDirection": "253.2"}, {"": "6", "WindSpeed": "9.6", "cloudCover": "100.0", "narrative": "Cloudy skies throughout the day with a chance of rain throughout the day.", "precipChance": "100.0", "precipType": "rain", "qpf": "3.679", "relativeHumidity": "99.1", "sunriseTimeLocal": "2023-07-06", "temperature": "[22.28, 21.17]", "thunderCategory": "Rain, Overcast", "validTimeUtc": "1688581800", "windDirection": "249.1"}, {"": "7", "WindSpeed": "10.1", "cloudCover": "100.0", "narrative": "Cloudy skies throughout the day with a chance of rain throughout the day.", "precipChance": "100.0", "precipType": "rain", "qpf": "1.29", "relativeHumidity": "97.4", "sunriseTimeLocal": "2023-07-07", "temperature": "[22.17, 21.17]", "thunderCategory": "Rain, Overcast", "validTimeUtc": "1688668200", "windDirection": "256.6"}, {"": "8", "WindSpeed": "6.5", "cloudCover": "100.0", "narrative": "Cloudy skies throughout the day with a chance of rain throughout the day.", "precipChance": "100.0", "precipType": "rain", "qpf": "1.126", "relativeHumidity": "98.3", "sunriseTimeLocal": "2023-07-08", "temperature": "[21.44, 21.06]", "thunderCategory": "Rain, Overcast", "validTimeUtc": "1688754600", "windDirection": "256.7"}, {"": "9", "WindSpeed": "7.4", "cloudCover": "99.5", "narrative": "Cloudy skies throughout the day with a chance of rain throughout the day.", "precipChance": "100.0", "precipType": "rain", "qpf": "0.483", "relativeHumidity": "96.6", "sunriseTimeLocal": "2023-07-09", "temperature": "[22.56, 20.94]", "thunderCategory": "Rain, Overcast", "validTimeUtc": "1688841000", "windDirection": "252.0"}, {"": "10", "WindSpeed": "6.7", "cloudCover": "99.2", "narrative": "Cloudy skies throughout the day with a chance of rain throughout the day.", "precipChance": "100.0", "precipType": "rain", "qpf": "0.44", "relativeHumidity": "97.5", "sunriseTimeLocal": "2023-07-10", "temperature": "[22.83, 20.94]", "thunderCategory": "Rain, Overcast", "validTimeUtc": "1688927400", "windDirection": "253.2"}, {"": "11", "WindSpeed": "6.3", "cloudCover": "96.9", "narrative": "Cloudy skies throughout the day with a chance of rain throughout the day.", "precipChance": "100.0", "precipType": "rain", "qpf": "0.555", "relativeHumidity": "96.4", "sunriseTimeLocal": "2023-07-11", "temperature": "[23.44, 21.17]", "thunderCategory": "Rain, Overcast", "validTimeUtc": "1689013800", "windDirection": "257.3"}, {"": "12", "WindSpeed": "6.5", "cloudCover": "99.8", "narrative": "Cloudy skies throughout the day with a chance of rain throughout the day.", "precipChance": "100.0", "precipType": "rain", "qpf": "0.41", "relativeHumidity": "97.3", "sunriseTimeLocal": "2023-07-12", "temperature": "[23.22, 21.56]", "thunderCategory": "Rain, Overcast", "validTimeUtc": "1689100200", "windDirection": "261.3"}, {"": "13", "WindSpeed": "7.6", "cloudCover": "96.7", "narrative": "Cloudy skies throughout the day with a chance of rain throughout the day.", "precipChance": "100.0", "precipType": "rain", "qpf": "0.588", "relativeHumidity": "95.3", "sunriseTimeLocal": "2023-07-13", "temperature": "[23.83, 21.67]", "thunderCategory": "Rain, Overcast", "validTimeUtc": "1689186600", "windDirection": "267.6"}, {"": "14", "WindSpeed": "6.7", "cloudCover": "96.6", "narrative": "Cloudy skies throughout the day with a chance of rain throughout the day.", "precipChance": "100.0", "precipType": "rain", "qpf": "0.527", "relativeHumidity": "96.1", "sunriseTimeLocal": "2023-07-14", "temperature": "[23.94, 21.44]", "thunderCategory": "Rain, Overcast", "validTimeUtc": "1689273000", "windDirection": "267.5"}];
 
    
     
@@ -59,10 +54,7 @@ const Weather=(props)=>{
       
     
      <View style={styles.wc1}>
-      <Image
-         source={cltype=='rain' ?  require('../../assets/crpr.jpg'):require('../../assets/crps.png')}
-         style={styles.climage}
-       />
+     
        <Text style={styles.dt}>{formattedDate}</Text>
        </View> 
        
@@ -72,8 +64,30 @@ const Weather=(props)=>{
        </View>
        <View  style={{paddingTop:15}}>
          <Text style={styles.temhead}>Temperature</Text>
-        
-         <FlatList
+         <View style={styles.scrollContainer}>
+         <View style={{ flexDirection: 'row', paddingHorizontal: 20 }}>
+  {wedata.map((item, index) => (
+    <View key={index} style={{ marginRight: 20, alignItems: 'center' }}>
+      <Text>
+        {item.temperature[8]}
+        {item.temperature[9]}` -{item.temperature[1]}
+        {item.temperature[2]}`C
+      </Text>
+     
+      <Text>
+        {item.sunriseTimeLocal[8]}
+        {item.sunriseTimeLocal[9]}{' '}
+        {item.sunriseTimeLocal[5] === '0'
+          ? months[item.sunriseTimeLocal[6]]
+          : item.sunriseTimeLocal[6] === '1'
+          ? months[11]
+          : months[12]}
+      </Text>
+     
+      <Text>{item.WindSpeed} m/s</Text>
+    </View>
+  ))}</View>
+         {/* <FlatList
   horizontal
   data={wedata}
   keyExtractor={(item, index) => index.toString()} // Adding a keyExtractor
@@ -112,35 +126,14 @@ const Weather=(props)=>{
       <Text>{item.WindSpeed} m/s</Text>
     </View>
   )}
-/>
+/> */}
 
-       
+       </View>
        </View>
  
        <View >
          <Text style={styles.temhead}>Rainfall</Text>
-         <LineChart
-         data={raindata}
-         width={280}
-         height={120}
-         chartConfig={{
-           backgroundGradientFrom: 'skyblue',
-           backgroundGradientTo: 'skyblue',
-           decimalPlaces: 2,
-           color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-           labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-           propsForDots: {
-             r: '6',
-             strokeWidth: '2',
-           },
-           useShadowColorFromDataset: false, 
-           xAxisLabelPosition: 'TOP', 
-           yAxisLabelPositionLeft: 'BOTTOM', 
-         }}
-         xLabelsOffset={-10} 
-         fromZero
-         yAxisInterval={10} 
-       />
+        
          
        </View>
         </View>

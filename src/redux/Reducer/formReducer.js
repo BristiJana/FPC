@@ -5,6 +5,7 @@ import {
   KYC_DETAIL,
   REMOVE_KYC_DETAIL,
   CLEAR,
+  SET_CONSTANT, 
 } from '../ReduxConstant';
 
 import {clearX} from '../Store';
@@ -14,6 +15,7 @@ const initialState = {
   bankDetailsState: {},
   landDetailsState: [],
   kycDetailsState: [],
+  constantValue: null,
 };
 
 export const formReducer = (state = initialState, actionObject) => {
@@ -150,10 +152,17 @@ export const formReducer = (state = initialState, actionObject) => {
         kycDetailsState: [],
       };
 
-      state = temp;
-      // initialState = temp;
+      return {
+        ...temp,
+        constantValue: state.constantValue,
+      };
 
-      return state;
+      case SET_CONSTANT: 
+          return {
+          ...state,
+          constantValue: action.payload,
+        };
+      
     default:
       return state;
   }
@@ -177,3 +186,4 @@ export const formReducer = (state = initialState, actionObject) => {
 //     landDetailsState: state.landDetailsState.concat(actionObject.value),
 //   };
 // }
+

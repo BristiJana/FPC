@@ -3,8 +3,8 @@ import { View, FlatList,StyleSheet, TouchableOpacity, Text, TextInput, Permissio
 import MapView, { Polygon, Marker } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import axios from 'axios';
-
-
+import { useDispatch } from 'react-redux';
+import { SET_CONSTANT } from '../../redux/Reducer/formReducer';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CustomDropdown from '../Other/CustomDropdown';
 import DateOfBirthComponent from '../Other/DateOfBirthComponent';
@@ -25,6 +25,8 @@ const DrawPage = ({navigation}) => {
 
   const MAPBOX_API_KEY = 'pk.eyJ1IjoiYnJpc3RpIiwiYSI6ImNsazJpNWo4dDBodmQzbHBqaGI0YjI1YW0ifQ.XLJuG4EVetRM0pM1F1sPnA';
 const AUTOCOMPLETE_ENDPOINT = `https://api.mapbox.com/geocoding/v5/mapbox.places/`;
+const dispatch = useDispatch();
+
 const DEFAULT_LOCATION = { latitude: 37.7749, longitude: -122.4194 };
   const [answerparams, setanswerparams] = useState([]);
   const cropUrl = 'https://micro.satyukt.com/Crops';
@@ -244,6 +246,17 @@ fincord.push(firstCoordinate);
     });
   };
 
+  const handlered=()=>{
+
+
+     setShowPopup1(true)
+     console.log(coordinates)
+     
+  
+    
+  
+
+  }
   const handleSearchCoordinates = () => {
     setOpen(!open);
 
@@ -545,7 +558,7 @@ fincord.push(firstCoordinate);
          {showArea && (<>
         <View style={styles.areaContainer}>
           <Text style={styles.areaText}>Enclosed: {calculateArea()} ha</Text>
-          <TouchableOpacity style={styles.popupButton} onPress={() => setShowPopup1(true)}>
+          <TouchableOpacity style={styles.popupButton} onPress={handlered}>
         <Text style={styles.popupButtonText}>Next</Text>
       </TouchableOpacity>
         </View>

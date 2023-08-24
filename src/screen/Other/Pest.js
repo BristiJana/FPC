@@ -52,14 +52,14 @@ const[showPicker,setShowPicker]=useState(false)
             itemWidth={300}
           />
           <View>
-            <View style={{borderBottomWidth:1,borderBottomColor:"grey",width:'100%',flex:1,paddingVertical: 10,}}>
+            
             <View style={{flexDirection:"row",justifyContent:"space-between"}}>
             <Text style={{color:'blue',fontWeight:'bold',paddingRight:20}}>Date</Text>
-            <Text style={{color:'black',fontWeight:'bold'}}> {pesdata[0].Date}</Text></View></View>
-            <View style={{borderBottomWidth:1,borderBottomColor:"grey",width:'100%',flex:1,paddingVertical: 10,}}>
+            <Text style={{color:'black',fontWeight:'bold'}}> {pesdata[0].Date}</Text></View>
+            
             <View style={{flexDirection:"row",justifyContent:"space-between"}}>
             <Text style={{color:'blue',fontWeight:'bold',paddingRight:20}}>Disease Name</Text>
-            <Text style={{color:'red',fontWeight:'bold'}}> {pesdata[0].Disease}</Text></View></View>
+            <Text style={{color:'red',fontWeight:'bold'}}> {pesdata[0].Disease}</Text></View>
             
             <Text style={{color:'blue',fontWeight:'bold',paddingTop:10}}>Affected part</Text>
             <Text style={{color:'black',width:100}}> {pesdata[0].Affected_Part}</Text>

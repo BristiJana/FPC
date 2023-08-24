@@ -21,6 +21,8 @@ target 'FPC' do
 
   pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
+  pod 'react-native-pdf', :path => '../node_modules/react-native-pdf'
+
   target 'FPCTests' do
     inherit! :complete
     # Pods for testing

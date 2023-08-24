@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet,FlatList,Image ,Dimensions,Modal, ScrollView} from 'react-native';
+import React, { useState,Link } from 'react';
+import { View, Text,Linking,WebView, TouchableOpacity, TouchableWithoutFeedback, StyleSheet,FlatList,Image ,Dimensions,Modal, ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LineChart } from 'react-native-chart-kit';
 import axios from 'axios';
@@ -10,8 +10,10 @@ import Soilee from './Soilee'
 import Crop from './Crop';
 import Lswi from './Lswi';
 import Pest from './Pest';
+import Test from './Test';
 import DatePicker from 'react-native-date-picker';
-
+import { useSelector } from 'react-redux';
+import { SET_CONSTANT } from '../../redux/Reducer/formReducer';
 
 // Retrieve finUrl from localStorage
 
@@ -25,7 +27,7 @@ const Collapse = (props) => {
   
  
 
-  
+  const constantValue = useSelector(state => state.formReducer.constantValue);
 
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -44,17 +46,14 @@ const[display,setDisplay]=useState(<></>);
   };
 
   const handlefunction=(val)=>{
-    if(val===1)
-    {
-      setDisplay(handleimgpress(props.farm))
-    }
-    else if(val===2)
+   
+    if(val===2)
     {
       handlepostpress(props.farm)
     }
     else if(val===3)
     {
-      setDisplay(handlesoilitempress());
+      setDisplay(handlesoilitempress(props.farm));
     }
     else if(val===4)
     {
@@ -106,9 +105,28 @@ const[display,setDisplay]=useState(<></>);
   const handlepostpress= async (passfarm)=>{
     
    
-    const pestUrl=passfarm
+    const FarmUrl='https://micro.satyukt.com/showPolygon?farmID='+passfarm+'&key=HsNrsgMzEJYshSvRWfoMUvmDcyRqNPFUH1AA_-HVvek='
 
-      console.log(pestUrl)
+      console.log(FarmUrl)
+    
+      try {
+        const response = await axios.get(FarmUrl);
+      console.log(response.data)
+
+      setTimeout(() => {
+        if (response.data !== undefined) {
+          console.log("Data received, setting state...");
+          
+          setDisplay(<Test farmdata={response.data} farmid={passfarm} nav={props.nav}/>);
+        } else {
+          console.log("Data is undefined");
+          setDisplay(<></>)
+        }
+      }, 2000); // Wait for 2000 milliseconds (adjust as needed)
+    } catch (error) {
+      alert(`Error fetching data: ${error}`);
+      setDisplay(<></>);
+    }
      
       
   
@@ -133,7 +151,7 @@ const[display,setDisplay]=useState(<></>);
           console.log("Data is undefined");
           setDisplay(<></>)
         }
-      }, 5000); // Wait for 2000 milliseconds (adjust as needed)
+      }, 2000); // Wait for 2000 milliseconds (adjust as needed)
     } catch (error) {
       alert(`Error fetching data: ${error}`);
       setDisplay(<></>);
@@ -163,7 +181,7 @@ const[display,setDisplay]=useState(<></>);
           console.log("Data is undefined");
           setDisplay(<></>)
         }
-      }, 5000); // Wait for 2000 milliseconds (adjust as needed)
+      }, 2000); // Wait for 2000 milliseconds (adjust as needed)
     } catch (error) {
       alert(`Error fetching data: ${error}`);
       setDisplay(<></>);
@@ -191,7 +209,7 @@ const[display,setDisplay]=useState(<></>);
           console.log("Data is undefined");
           setDisplay(<></>)
         }
-      }, 5000); // Wait for 2000 milliseconds (adjust as needed)
+      }, 2000); // Wait for 2000 milliseconds (adjust as needed)
     } catch (error) {
       alert(`Error fetching data: ${error}`);
       setDisplay(<></>);
@@ -220,7 +238,7 @@ const[display,setDisplay]=useState(<></>);
           console.log("Data is undefined");
           setDisplay(<></>)
         }
-      }, 5000); // Wait for 2000 milliseconds (adjust as needed)
+      }, 2000); // Wait for 2000 milliseconds (adjust as needed)
     } catch (error) {
       alert(`Error fetching data: ${error}`);
       setDisplay(<></>);
@@ -250,7 +268,7 @@ const[display,setDisplay]=useState(<></>);
           console.log("Data is undefined");
           setDisplay(<></>)
         }
-      }, 5000); // Wait for 2000 milliseconds (adjust as needed)
+      }, 2000); // Wait for 2000 milliseconds (adjust as needed)
     } catch (error) {
       alert(`Error fetching data: ${error}`);
       setDisplay(<></>);
@@ -260,49 +278,83 @@ const[display,setDisplay]=useState(<></>);
     
   
   }
-  const handleimgpress=  (passfarm)=>{
+ 
+
+  const handlesoilitempress=  (passfarm)=>{
     
-    return(<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-      <TouchableOpacity onPress={() => props.nav.navigate('Uploadpage')}>
-    <Image
-      source={require('../../assets/camera.jpg')} // Replace with the actual image path
-      style={{ width: 50, height: 50, marginRight: 10, borderRadius:50 }}
-    /></TouchableOpacity>
-    <Text style={{color:'grey', width:250}}>Please upload a image of crop/farm which has any isuues, to get the advisory.</Text>
-  </View>)
-    
+    const openPDF = async () => {
+      // try {
+      //   const response = await axios.get('https://micro.satyukt.com/user/soilreport/pdf/57480?key=nlvw9duAn8--11GZpvtDvJNlMJWrSigzwo_MO_5iTfc='); // Replace with your API endpoint
+        
+      //   const pdfLink = response.data.pdf; // Assuming the API response has a key named 'pdfLink'
+        
+      //   Linking.canOpenURL(pdfLink).then((supported) => {
+      //     if (supported) {
+      //       Linking.openURL(pdfLink);
+      //     } else {
+      //       console.log("Don't know how to open URL: " + pdfLink);
+      //     }
+      //   }).catch((err) => console.error('An error occurred', err));
+      // } catch (error) {
+      //   console.error('Error fetching PDF link:', error);
+      // }
+
+      const pdfLink =  "https://data.satyukt.com/sat2farm/18036/57480/soilReportPDF/57480_20230823T115605.pdf?Expires=1692878947&Signature=VKXfjTTPkknmIxFDBL4otmlVRtg5lBiTbV4dLrQG-YYbpMSRnkmQYfzj-AYywjeJCHycBVtz095jZlKCsjbWCTJU5kbD9ZttqQ1XEuxN-wMk5cCiV-oEpLwlBdx0BbKL2uJlM5-UzFmCNJVNSxUgcMWR55-~2LnVi9A3i7SQ00w9cnYW6g8d2Z-xu78tRvJeAN~qhMuZInEutk47blvZJrWBQGySormEkP9hzMz1hcKqymOfFm4okLobA7lOdLnCqa6IWzcbPCLlJsMmmFgTkwdw5LujQezHEgCmEyX01Z2-CJiHysF5Xr9GdH6Df8Y6PkI9SAsLpag6sri2SqdMSA__&Key-Pair-Id=K53CD2SMKNQC1"
+      return(
+
+        <View style={{ flex: 1 }}>
+          <Text>Hi</Text>
+     </View>)
+    };
   
-  }
-
-  const handlesoilitempress=  ()=>{
-    
-    return(<View style={styles.soilcontainer}>
-      <Text style={styles.soilheading}>Soil Health Report PDF</Text>
-      <View style={styles.soilbuttonContainer}>
-        <TouchableOpacity style={styles.soilbutton}>
-        <View style={{justifyContent:'space-between',flexDirection:'row',alignItems:'center'}}>
-        <Icon name="file" size={9} color="white"  />
-          <Text style={styles.soilbuttonText}>View</Text></View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.soilbutton}>
-        <View style={{justifyContent:'space-between',flexDirection:'row',alignItems:'center'}}>
-        <Icon name="download" size={9} color="white"  />
-          <Text style={styles.soilbuttonText}>Download</Text></View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.soilbutton}>
-          <View style={{justifyContent:'space-between',flexDirection:'row',alignItems:'center'}}>
-        <Icon name="refresh" size={9} color="white"  />
-
-          <Text style={styles.soilbuttonText}>Regenerate</Text></View>
-        </TouchableOpacity>
+    const downloadPDF = () => {
+      // Logic to download the PDF
+      // Example: Use a library like react-native-fs to download the PDF
+    };
+  
+    const handleRegenerate = () => {
+      // Logic to handle regeneration and show the popup
+      // Example: You can use a state variable to control the popup's visibility
+      setRegeneratePopupVisible(true);
+      setTimeout(() => {
+        setRegeneratePopupVisible(false);
+      }, 2000); // Close the popup automatically after 2 seconds
+    };
+  
+    return (
+      <View style={styles.soilcontainer}>
+        <Text style={styles.soilheading}>Soil Health Report PDF</Text>
+        <View style={styles.soilbuttonContainer}>
+        
+          <TouchableOpacity style={styles.soilbutton} onPress={openPDF}>
+            <View style={{ justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center' }}>
+              <Icon name="file" size={9} color="white" />
+              <Text style={styles.soilbuttonText}>View</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.soilbutton} onPress={downloadPDF}>
+            <View style={{ justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center' }}>
+              <Icon name="download" size={9} color="white" />
+              <Text style={styles.soilbuttonText}>Download</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.soilbutton} >
+            <View style={{ justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center' }}>
+              <Icon name="refresh" size={9} color="white" />
+              <Text style={styles.soilbuttonText}>Regenerate</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        
       </View>
-    </View>)
+    );
     
   
   }
 
   
   return (<>
+ 
     <View style={styles.container}>
       <TouchableOpacity onPress={toggleDropdown} style={styles.header}>
         <Text style={styles.headerText}>{props.val.value}</Text>
@@ -312,7 +364,7 @@ const[display,setDisplay]=useState(<></>);
       {isExpanded && (
         <TouchableWithoutFeedback onPress={toggleDropdown}>
           <View style={[styles.dropdown, {  backgroundColor: props.val.id===4?'skyblue':'#f0f0f0', }]}>
-            <Text style={styles.dropdownText}>{display}</Text>
+           {display}
           </View>
         </TouchableWithoutFeedback>
       )}
