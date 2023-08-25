@@ -90,7 +90,7 @@ const Report = (props) => {
      
 
           <View style={[styles.dropdown, {  backgroundColor: '#f0f0f0'}]}>
-         <View style={{width:'100%',height:150}}>
+         <View >
     <Farm farmid={FarmID}/></View>
   </View>
           
