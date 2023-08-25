@@ -10,7 +10,7 @@ import Soilee from './Soilee'
 import Crop from './Crop';
 import Lswi from './Lswi';
 import Pest from './Pest';
-import Test from './Test';
+import Cropcal from './Cropcal';
 import DatePicker from 'react-native-date-picker';
 import { useSelector } from 'react-redux';
 import { SET_CONSTANT } from '../../redux/Reducer/formReducer';
@@ -29,7 +29,7 @@ const Collapse = (props) => {
 
   const constantValue = useSelector(state => state.formReducer.constantValue);
 
-
+  const [range, setRange] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
 
 
@@ -47,11 +47,8 @@ const[display,setDisplay]=useState(<></>);
 
   const handlefunction=(val)=>{
    
-    if(val===2)
-    {
-      handlepostpress(props.farm)
-    }
-    else if(val===3)
+    
+    if(val===3)
     {
       setDisplay(handlesoilitempress(props.farm));
     }
@@ -77,7 +74,7 @@ const[display,setDisplay]=useState(<></>);
     }
     else if(val===9)
     {
-      alert('Crop Calendar')
+      handlecrpcalen(props.farm,props.type)
     }
     else if(val===10)
     {
@@ -102,35 +99,25 @@ const[display,setDisplay]=useState(<></>);
   
   }
 
-  const handlepostpress= async (passfarm)=>{
-    
-   
-    const FarmUrl='https://micro.satyukt.com/showPolygon?farmID='+passfarm+'&key=HsNrsgMzEJYshSvRWfoMUvmDcyRqNPFUH1AA_-HVvek='
-
-      console.log(FarmUrl)
-    
-      try {
-        const response = await axios.get(FarmUrl);
-      console.log(response.data)
-
-      setTimeout(() => {
-        if (response.data !== undefined) {
-          console.log("Data received, setting state...");
-          
-          setDisplay(<Test farmdata={response.data} farmid={passfarm} nav={props.nav}/>);
-        } else {
-          console.log("Data is undefined");
-          setDisplay(<></>)
-        }
-      }, 2000); // Wait for 2000 milliseconds (adjust as needed)
-    } catch (error) {
-      alert(`Error fetching data: ${error}`);
-      setDisplay(<></>);
-    }
-     
-      
   
-  }
+     
+  const handlecrpcalen= (farm,type)=>{
+    
+    const crop = type==""?"Tomato":type
+    
+      console.log(farm)
+      console.log(type)
+      console.log(crop)
+     
+       
+      setDisplay(<Cropcal farm={farm} type={crop} />)
+
+  
+  }     
+  
+  
+
+  
   const handlepesitempress= async (passfarm)=>{
     
    
@@ -163,8 +150,11 @@ const[display,setDisplay]=useState(<></>);
   }
   const handleslpress= async (passfarm)=>{
     
-   
-    const soilUrl= 'https://micro.satyukt.com/api/info?key=HsNrsgMzEJYshSvRWfoMUvmDcyRqNPFUH1AA_-HVvek=&plotName='+passfarm
+    const apiKey =
+    passfarm =='57480'
+      ? 'nlvw9duAn8--11GZpvtDvJNlMJWrSigzwo_MO_5iTfc='
+      : 'HsNrsgMzEJYshSvRWfoMUvmDcyRqNPFUH1AA_-HVvek=';
+    const soilUrl= 'https://micro.satyukt.com/api/info?key='+apiKey+'&plotName='+passfarm
       console.log(soilUrl)
     
       

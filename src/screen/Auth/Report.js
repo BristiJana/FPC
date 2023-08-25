@@ -29,12 +29,10 @@ const Report = (props) => {
   };
   
   const route = useRoute();
-  const { params } = route;
-  const FarmID = params ? params.FarmID : null;
- 
+  const { FarmID, Type } = route.params;
   const lisdata =  [
   
-    { id: 2, value: 'Farm Details' },
+    
     { id: 3, value: 'Soil Health' },
     { id: 4, value: 'Weather Forecast' },
     { id: 5, value: 'Soil Moisture (SM)' },
@@ -104,7 +102,7 @@ const Report = (props) => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View key={item.id} >
-          <Collapse val={item} farm={FarmID} nav={props.navigation}/>
+          <Collapse val={item} farm={FarmID} nav={props.navigation} type={Type}/>
           <View style={styles.colapitem}></View>
           </View>
          

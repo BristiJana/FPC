@@ -112,7 +112,8 @@ const Home = (props) => {
         keyExtractor={(item) => item.FarmID}
         renderItem={({ item }) => (
          <TouchableOpacity onPress={()=>{props.navigation.navigate("Report", {
-          FarmID: item.FarmID})}}>
+          FarmID: item.FarmID,
+          Type:item.croptype})}}>
           <View style={styles.farmItem}>
             <View style={styles.farmitemcontainer}>
            
