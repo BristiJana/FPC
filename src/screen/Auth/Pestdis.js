@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
-import { View, Text, Button, FlatList, StyleSheet ,TouchableOpacity} from 'react-native';
+import React, { useState ,useRef} from 'react';
+import { View, Text, Button, FlatList, StyleSheet ,TouchableOpacity,Image,Dimensions} from 'react-native';
 import { useRoute } from '@react-navigation/native';
-import Carousel from 'react-native-snap-carousel';
+import Carousel, {Pagination} from 'react-native-snap-carousel';
+
+export const SLIDER_WIDTH = 280;
+export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.8);
+
 const dataArray = [
   { id: 1, Disease: 'Disease 1 Content' },
   { id: 2, Pest: 'Pest 1 Content' },
@@ -14,7 +18,25 @@ const Pestdis = () => {
   const route = useRoute();
   const dataReceived = route.params;
   const [selectedOption, setSelectedOption] = useState('option1');
+  const [index, setIndex] = useState(0);
+    const isCarousel = useRef(null);
 
+    const renderItem = ({item}) => {
+      return (
+        <View
+          style={{
+            borderWidth: 1,
+            padding: 20,
+            borderRadius: 20,
+            alignItems: 'center',
+            backgroundColor: 'white',
+          }}>
+          <Image source={{uri: item}} style={{width: 200, height: 200}} />
+         
+        </View>
+      );
+    };
+    
   const filteredData = dataReceived.filter(item => {
     if (selectedOption === 'option1') {
       return 'Disease' in item;
@@ -66,19 +88,35 @@ const Pestdis = () => {
         renderItem={({ item }) => (
           <View style={styles.item}>
             {selectedOption === 'option1' ? (<>
-              <Carousel
-              layout={'default'}
-              data={item.Disease_img_url}
-              renderItem={({ item ,index}) => {
-                return (
-                  <View style={styles.slide}>
-                  <Image source={item} style={styles.image} />
-                </View>
-                );
-              }}
-              sliderWidth={300}
-              itemWidth={300}
-            />
+             
+            {item.Disease_img_url.length > 0 && (<>
+           <Carousel
+        ref={isCarousel}
+        data={item.Disease_img_url}
+        renderItem={renderItem}
+        sliderWidth={SLIDER_WIDTH}
+        itemWidth={ITEM_WIDTH}
+        onSnapToItem={index => setIndex(index)}
+      />
+      <Pagination
+        dotsLength={item.Disease_img_url.length}
+        activeDotIndex={index}
+        carouselRef={isCarousel}
+        dotStyle={{
+          width: 10,
+          height: 10,
+          borderRadius: 5,
+          marginHorizontal: 8,
+          backgroundColor: '#F4BB41',
+        }}
+        tappableDots={true}
+        inactiveDotStyle={{
+          backgroundColor: 'black',
+          // Define styles for inactive dots here
+        }}
+        inactiveDotOpacity={0.4}
+        inactiveDotScale={0.6}
+      /></>)}
              <View>
               <View style={{borderBottomWidth:1,borderBottomColor:"grey",width:'100%',flex:1,paddingVertical: 10,}}>
              
@@ -108,19 +146,35 @@ const Pestdis = () => {
            </View></>
             ) : (
               <>
-              <Carousel
-              layout={'default'}
-              data={item.Pest_img_url}
-              renderItem={({ item ,index}) => {
-                return (
-                  <View style={styles.slide}>
-                  <Image source={item} style={styles.image} />
-                </View>
-                );
-              }}
-              sliderWidth={300}
-              itemWidth={300}
-            />
+             
+                {item.Pest_img_url.length > 0 && (<>
+           <Carousel
+        ref={isCarousel}
+        data={item.Pest_img_url}
+        renderItem={renderItem}
+        sliderWidth={SLIDER_WIDTH}
+        itemWidth={ITEM_WIDTH}
+        onSnapToItem={index => setIndex(index)}
+      />
+      <Pagination
+        dotsLength={item.Pest_img_url.length}
+        activeDotIndex={index}
+        carouselRef={isCarousel}
+        dotStyle={{
+          width: 10,
+          height: 10,
+          borderRadius: 5,
+          marginHorizontal: 8,
+          backgroundColor: '#F4BB41',
+        }}
+        tappableDots={true}
+        inactiveDotStyle={{
+          backgroundColor: 'black',
+          // Define styles for inactive dots here
+        }}
+        inactiveDotOpacity={0.4}
+        inactiveDotScale={0.6}
+      /></>)}
               <View>
                 <View style={{borderBottomWidth:1,borderBottomColor:"grey",width:'100%',flex:1,paddingVertical: 10,}}>
              

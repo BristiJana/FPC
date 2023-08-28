@@ -1,25 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState ,useRef} from 'react';
 import { View, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet,FlatList,Image ,Dimensions,Modal, ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LineChart } from 'react-native-chart-kit';
 import axios from 'axios';
-import Carousel from 'react-native-snap-carousel';
+
 import { Button } from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 
+import Carousel, {Pagination} from 'react-native-snap-carousel';
 
-const images = [
-    { id: 1, source: require('../../assets/crop.png')},
-    { id: 2, source: require('../../assets/crprr.png') },
-    { id: 3, source: require('../../assets/crps.png') },
-    // Add more image objects here
-  ];
+export const SLIDER_WIDTH = Dimensions.get('window').width + 30;
+export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.8);
+
+
 
 const Pest= (props)=>
 {
   
     const pesdata=props.pesdata
-
+    const iter=pesdata[0].Disease_img_url
+    const [index, setIndex] = useState(0);
+    const isCarousel = useRef(null);
     const [showsmPopup, setShowsmPopup] = useState(false);
 
 const [selectedDate, setSelectedDate] = useState(new Date());
@@ -27,30 +28,53 @@ const [selectedImageUrl, setSelectedImageUrl] = useState(null);
 const[showPicker,setShowPicker]=useState(false)
 
   const num=pesdata.length-1;
-  const renderItem = ({ item ,index}) => {
+  
+  const renderItem = ({item}) => {
     return (
-      <View style={styles.slide}>
-      <Image source={item} style={styles.image} />
-    </View>
+      <View
+        style={{
+          borderWidth: 1,
+          padding: 20,
+          borderRadius: 20,
+          alignItems: 'center',
+          backgroundColor: 'white',
+        }}>
+        <Image source={{uri: item}} style={{width: 200, height: 200}} />
+       
+      </View>
     );
   };
   
     return(<View style={{alignContent:'center',alignItems:'center',textAlign:'center'}}>
-    {/* <Carousel
-      layout={'default'}
-      data={images}
-      renderItem={renderItem}
-      sliderWidth={width}
-      itemWidth={width}
-      loop={true}
-    /> */}
-    <Carousel
-            layout={'default'}
-            data={pesdata[0].Disease_img_url}
-            renderItem={renderItem}
-            sliderWidth={300}
-            itemWidth={300}
-          />
+ 
+    {iter.length > 0 && (<>
+           <Carousel
+        ref={isCarousel}
+        data={iter}
+        renderItem={renderItem}
+        sliderWidth={SLIDER_WIDTH}
+        itemWidth={ITEM_WIDTH}
+        onSnapToItem={index => setIndex(index)}
+      />
+      <Pagination
+        dotsLength={iter.length}
+        activeDotIndex={index}
+        carouselRef={isCarousel}
+        dotStyle={{
+          width: 10,
+          height: 10,
+          borderRadius: 5,
+          marginHorizontal: 8,
+          backgroundColor: '#F4BB41',
+        }}
+        tappableDots={true}
+        inactiveDotStyle={{
+          backgroundColor: 'black',
+          // Define styles for inactive dots here
+        }}
+        inactiveDotOpacity={0.4}
+        inactiveDotScale={0.6}
+      /></>)}
           <View>
             
             <View style={{flexDirection:"row",justifyContent:"space-between"}}>

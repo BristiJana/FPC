@@ -44,58 +44,63 @@ const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padSt
 
 const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   const fetchChartData = async () => {
-  //     const chartDataArray = [];
+  useEffect(() => {
+    const fetchChartData = async () => {
+      const chartDataArray = [];
 
-  //     for (const value of soildata) {
-  //       const url = value.zonalStats.sm;
+      for (const [index, value] of soildata.entries()) {
+        const url = value.zonalStats.sm;
+        console.log(`Fetching data for index ${index}, URL: ${url}`);
+        try {
+          const response = await axios(url);
+          console.log(response.data)
+          if (response.data!==undefined) {
+            const data = response.data
+            chartDataArray.push(data.mean);
+            console.log(chartDataArray)
+          } else {
+            console.error(`Error fetching data from ${url}, status: ${response.status}`);
+            chartDataArray.push(null); // You can set a default value in case of an error
+            console.log(chartDataArray)
+          }
+        } catch (error) {
+          console.error(`Error fetching data from ${url}: ${error}`);
+          chartDataArray.push(null); // You can set a default value in case of an error
+          console.log(chartDataArray)
+        }
+      }
 
-  //       try {
-  //         const response = await fetch(url);
-  //         if (response.ok) {
-  //           const data = await response.json();
-  //           chartDataArray.push(data.mean);
-  //         } else {
-  //           console.error(`Error fetching data from ${url}, status: ${response.status}`);
-  //           chartDataArray.push(0); // You can set a default value in case of an error
-  //         }
-  //       } catch (error) {
-  //         console.error(`Error fetching data from ${url}: ${error}`);
-  //         chartDataArray.push(0); // You can set a default value in case of an error
-  //       }
-  //     }
+      setChartData(chartDataArray.filter(value => value !== null));
+      console.log(chartData)
+      setLoading(false);
+    };
 
-  //     setChartData(chartDataArray);
-  //     setLoading(false);
-  //   };
-
-  //   fetchChartData();
-  // }, [soildata]);
+    fetchChartData();
+  }, []);
 
 // ...
 
-const handleget = async (value)=>{
+// const handleget = async (value)=>{
  
-  try {
-    const url = value.zonalStats.sm;
-    const response = await axios.get(url);
-    console.log("handle get ", response.data);
-    const parsedDataArray = response.data;
+//   try {
+//     const url = value.zonalStats.sm;
+//     const response = await axios.get(url);
+//     console.log("handle get ", response.data);
+//     const parsedDataArray = response.data;
 
-    // Check if the response data array is not empty
-    if (parsedDataArray && parsedDataArray.length > 0) {
-      const meanValue = parseFloat(parsedDataArray[0].mean);
-      return meanValue;
-    } else {
-      return null;
-    }
-  } catch (error) {
-    console.log(`Error fetching data: ${error}`);
-    return null;
-  }
+//     // Check if the response data array is not empty
+//     if (parsedDataArray && parsedDataArray.length > 0) {
+//       const meanValue = parseFloat(parsedDataArray[0].mean);
+//       return meanValue;
+//     } else {
+//       return null;
+//     }
+//   } catch (error) {
+//     console.log(`Error fetching data: ${error}`);
+//     return null;
+//   }
 
-}
+// }
     const sldata = {
       labels: soildata.map((value)=>{
         const curr= value.Date
@@ -111,13 +116,14 @@ const handleget = async (value)=>{
         {
           // data: [45,89,0,12,78,89,55,78,122,45],
           
-          data:soildata.map((value) => {
-            const dataFromHandleGet = handleget(value);
-            console.log("hey")
-            console.log("Data from handleget:", dataFromHandleGet);
-            // const meanValues = dataFromHandleGet.map(item => parseFloat(item.mean));
-            return (0)
-          }),
+          data:chartData,
+          // soildata.map((value) => {
+          //   const dataFromHandleGet = handleget(value);
+          //   console.log("hey")
+          //   console.log("Data from handleget:", dataFromHandleGet);
+          //   // const meanValues = dataFromHandleGet.map(item => parseFloat(item.mean));
+          //   return (0)
+          // }),
 
           color: (opacity = 1) => `rgba(0, 255, 0, ${opacity})`, 
           strokeWidth: 2,

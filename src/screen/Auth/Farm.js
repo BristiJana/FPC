@@ -24,6 +24,8 @@ const YourComponent = (props) => {
     const[date,setdate]=useState('');
     const[location,setlocation]=useState('');
 
+    const [initialRegion, setInitialRegion] = useState(null);
+
     const ApiUrl='https://micro.satyukt.com/showPolygon?farmID='+props.farmid+'&key=HsNrsgMzEJYshSvRWfoMUvmDcyRqNPFUH1AA_-HVvek='
   useEffect(() => {
     const fetchData = async () => {
@@ -40,6 +42,7 @@ const YourComponent = (props) => {
         // <Actual data={formattedCoordinates} all={response.data}/>
         const areaFloat = parseFloat(response.data.area);
     
+
         setCoordinates(formattedCoordinates)
         setcropname(response.data.crop_type)
         console.log(cropname)
@@ -48,6 +51,22 @@ const YourComponent = (props) => {
         setdate(response.data.Sowing_date)
         setlocation(response.data.District)
         console.log(coordinates)
+
+        const minLatitude = Math.min(...formattedCoordinates.map(coord => coord.latitude));
+        const maxLatitude = Math.max(...formattedCoordinates.map(coord => coord.latitude));
+        const minLongitude = Math.min(...formattedCoordinates.map(coord => coord.longitude));
+        const maxLongitude = Math.max(...formattedCoordinates.map(coord => coord.longitude));
+
+        const centerLatitude = (minLatitude + maxLatitude) / 2;
+        const centerLongitude = (minLongitude + maxLongitude) / 2;
+
+        setInitialRegion({
+          latitude: centerLatitude,
+          longitude: centerLongitude,
+          latitudeDelta: Math.abs(maxLatitude - minLatitude) + 0.001,
+          longitudeDelta: Math.abs(maxLongitude - minLongitude) + 0.001,
+        });
+
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -85,7 +104,7 @@ const YourComponent = (props) => {
            <Text>{ coord.longitude}</Text>  
             </>
         ))} */}
-      <MapView style={styles.map} mapType='satellite'>
+      <MapView style={styles.map} initialRegion={initialRegion} mapType='satellite'>
         <Polyline coordinates={coordinates} strokeWidth={2} strokeColor="#00F" />
         {coordinates.map((coord, index) => (
           <Marker
