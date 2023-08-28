@@ -136,6 +136,7 @@ const[display,setDisplay]=useState(<></>);
           setDisplay(<Pest pesdata={response.data} nav={props.nav}/>);
         } else {
           console.log("Data is undefined");
+          alert("Data is undefined")
           setDisplay(<></>)
         }
       }, 2000); // Wait for 2000 milliseconds (adjust as needed)
@@ -352,11 +353,11 @@ const[display,setDisplay]=useState(<></>);
         <Icon name={isExpanded ? 'angle-up' : 'angle-down'} size={20} color="black" style={styles.colicon}/>
       </TouchableOpacity>
       {isExpanded && (
-        <TouchableWithoutFeedback onPress={toggleDropdown}>
+        <View onPress={toggleDropdown}>
           <View style={[styles.dropdown, {  backgroundColor: props.val.id===4?'skyblue':'#f0f0f0', }]}>
            {display}
           </View>
-        </TouchableWithoutFeedback>
+        </View>
       )}
     </View>
    </>

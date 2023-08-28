@@ -44,63 +44,64 @@ const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padSt
 
 const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchChartData = async () => {
-      const chartDataArray = [];
+  // useEffect(() => {
+  //   const fetchChartData = async () => {
+  //     const chartDataArray = [];
 
-      for (const [index, value] of soildata.entries()) {
-        const url = value.zonalStats.sm;
-        console.log(`Fetching data for index ${index}, URL: ${url}`);
-        try {
-          const response = await axios(url);
-          console.log(response.data)
-          if (response.data!==undefined) {
-            const data = response.data
-            chartDataArray.push(data.mean);
-            console.log(chartDataArray)
-          } else {
-            console.error(`Error fetching data from ${url}, status: ${response.status}`);
-            chartDataArray.push(null); // You can set a default value in case of an error
-            console.log(chartDataArray)
-          }
-        } catch (error) {
-          console.error(`Error fetching data from ${url}: ${error}`);
-          chartDataArray.push(null); // You can set a default value in case of an error
-          console.log(chartDataArray)
-        }
-      }
+  //     for (const [index, value] of soildata.entries()) {
+  //       const url = value.zonalStats.sm;
+  //       console.log(`Fetching data for index ${index}, URL: ${url}`);
+  //       try {
+  //         const response = await axios.get(url);
+  //         console.log(response.data)
+  //         if (response.data!==undefined) {
+  //           const data = response.data
+  //           chartDataArray.push(data.mean);
+  //           console.log(chartDataArray)
+  //         } else {
+  //           console.error(`Error fetching data from ${url}, status: ${response.status}`);
+  //           chartDataArray.push(null); // You can set a default value in case of an error
+  //           console.log(chartDataArray)
+  //         }
+  //       } catch (error) {
+  //         console.error(`Error fetching data from ${url}: ${error}`);
+  //         chartDataArray.push(null); // You can set a default value in case of an error
+  //         console.log(chartDataArray)
+  //       }
+  //     }
 
-      setChartData(chartDataArray.filter(value => value !== null));
-      console.log(chartData)
-      setLoading(false);
-    };
+  //     setChartData(chartDataArray.filter(value => value !== null));
+  //     console.log(chartData)
+  //     setLoading(false);
+  //   };
 
-    fetchChartData();
-  }, []);
+  //   fetchChartData();
+  // }, []);
 
 // ...
 
-// const handleget = async (value)=>{
+const handleget = async (value)=>{
  
-//   try {
-//     const url = value.zonalStats.sm;
-//     const response = await axios.get(url);
-//     console.log("handle get ", response.data);
-//     const parsedDataArray = response.data;
+  try {
+    const url = value
+    const response = await axios.get(url);
+    console.log("handle get ", response.data);
+    const parsedDataArray = response.data;
 
-//     // Check if the response data array is not empty
-//     if (parsedDataArray && parsedDataArray.length > 0) {
-//       const meanValue = parseFloat(parsedDataArray[0].mean);
-//       return meanValue;
-//     } else {
-//       return null;
-//     }
-//   } catch (error) {
-//     console.log(`Error fetching data: ${error}`);
-//     return null;
-//   }
+    // Check if the response data array is not empty
+    if (parsedDataArray && parsedDataArray.length > 0) {
+      const meanValue = parseFloat(parsedDataArray[0].mean);
+      console.log(meanValue)
+      return meanValue;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.log(`Error fetching data: ${error}`);
+    return null;
+  }
 
-// }
+}
     const sldata = {
       labels: soildata.map((value)=>{
         const curr= value.Date
@@ -114,11 +115,11 @@ const [loading, setLoading] = useState(true);
       
       datasets: [
         {
-          // data: [45,89,0,12,78,89,55,78,122,45],
+          data: [45,89,0,12,78,89,55,78,122,45,78,90,12,45,90,45,99,65,34,13],
           
-          data:chartData,
-          // soildata.map((value) => {
-          //   const dataFromHandleGet = handleget(value);
+          // data:soildata.map((value) => {
+          //   console.log(value.zonalStats.sm);
+          //   const dataFromHandleGet = handleget(value.zonalStats.sm);
           //   console.log("hey")
           //   console.log("Data from handleget:", dataFromHandleGet);
           //   // const meanValues = dataFromHandleGet.map(item => parseFloat(item.mean));
@@ -163,7 +164,7 @@ const [loading, setLoading] = useState(true);
     );}
     
     return (<>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' ,marginTop:50}}>
         <View style={{flexDirection:'row',justifyContent:'space-between'}}>
       <TouchableOpacity onPress={() => setShowPicker(!showPicker)}>
       <Icon name="calendar" style={styles.calIcon} />
@@ -230,12 +231,12 @@ const [loading, setLoading] = useState(true);
       <Text style={{color:'green',fontWeight:'bold',fontSize:18,marginBottom:20}}>Chart</Text>
     
         
-     
+      <ScrollView horizontal>
             <LineChart
             data={sldata}
-              width={300} // Adjust this width as needed
+              width={1400} // Adjust this width as needed
               height={200}
-              yAxisLabel={'$'}
+             
               chartConfig={{
                 backgroundGradientFrom: '#f0f0f0',
                 backgroundGradientTo: '#f0f0f0',
@@ -247,7 +248,7 @@ const [loading, setLoading] = useState(true);
               decorator={() => null}
              
             />
-          
+          </ScrollView>
     
       </View>
     </View>

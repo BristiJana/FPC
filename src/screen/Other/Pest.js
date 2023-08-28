@@ -17,8 +17,8 @@ export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.8);
 const Pest= (props)=>
 {
   
-    const pesdata=props.pesdata
-    const iter=pesdata[0].Disease_img_url
+    const pesdata= props.pesdata
+    const iter= pesdata.hasOwnProperty("Disease_img_url")?pesdata[0].Disease_img_url:[];
     const [index, setIndex] = useState(0);
     const isCarousel = useRef(null);
     const [showsmPopup, setShowsmPopup] = useState(false);

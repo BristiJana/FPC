@@ -155,7 +155,7 @@ const handleget = async (value)=>{
     );}
     
     return (<>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',marginTop:140}}>
         <View style={{flexDirection:'row',justifyContent:'space-between'}}>
       <TouchableOpacity onPress={() => setShowPicker(!showPicker)}>
       <Icon name="calendar" style={styles.calIcon} />
@@ -222,12 +222,12 @@ const handleget = async (value)=>{
       <Text style={{color:'green',fontWeight:'bold',fontSize:18,marginBottom:20}}>Chart</Text>
     
         
-     
+      <ScrollView horizontal>
             <LineChart
             data={sldata}
-              width={300} // Adjust this width as needed
+              width={1400} // Adjust this width as needed
               height={200}
-              yAxisLabel={'$'}
+              
               chartConfig={{
                 backgroundGradientFrom: '#f0f0f0',
                 backgroundGradientTo: '#f0f0f0',
@@ -239,7 +239,7 @@ const handleget = async (value)=>{
               decorator={() => null}
              
             />
-          
+          </ScrollView>
     
       </View>
     </View>

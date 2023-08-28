@@ -89,17 +89,17 @@ const Pestdis = () => {
           <View style={styles.item}>
             {selectedOption === 'option1' ? (<>
              
-            {item.Disease_img_url.length > 0 && (<>
+            { item.hasOwnProperty("Disease_img_url")?(item.Disease_img_url.length):(0)> 0 && (<>
            <Carousel
         ref={isCarousel}
-        data={item.Disease_img_url}
+        data={item.hasOwnProperty("Disease_img_url")?(item.Disease_img_url):([])}
         renderItem={renderItem}
         sliderWidth={SLIDER_WIDTH}
         itemWidth={ITEM_WIDTH}
         onSnapToItem={index => setIndex(index)}
       />
       <Pagination
-        dotsLength={item.Disease_img_url.length}
+        dotsLength={item.hasOwnProperty("Disease_img_url")?(item.Disease_img_url.length):(0)}
         activeDotIndex={index}
         carouselRef={isCarousel}
         dotStyle={{
@@ -147,17 +147,17 @@ const Pestdis = () => {
             ) : (
               <>
              
-                {item.Pest_img_url.length > 0 && (<>
+                {item.hasOwnProperty("Pest_img_url")?(item.Pest_img_url.length):(0) > 0 && (<>
            <Carousel
         ref={isCarousel}
-        data={item.Pest_img_url}
+        data={item.hasOwnProperty("Pest_img_url")?item.Pest_img_url:[]}
         renderItem={renderItem}
         sliderWidth={SLIDER_WIDTH}
         itemWidth={ITEM_WIDTH}
         onSnapToItem={index => setIndex(index)}
       />
       <Pagination
-        dotsLength={item.Pest_img_url.length}
+        dotsLength={item.hasOwnProperty("Pest_img_url")?item.Pest_img_url.length:0}
         activeDotIndex={index}
         carouselRef={isCarousel}
         dotStyle={{
