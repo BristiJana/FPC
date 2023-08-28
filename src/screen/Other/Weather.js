@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet,FlatList,Image ,Dimensions,Modal, ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LineChart } from 'react-native-chart-kit';
-import axios from 'axios';
-import Carousel from 'react-native-snap-carousel';
-import { Button } from 'react-native-paper';
 
 const Weather=(props)=>{
   
@@ -12,15 +9,21 @@ const Weather=(props)=>{
     const wedata=props.wedata;
 
    
-    
+    const sz=wedata.length
 
-   const temp=wedata[14].temperature;
-   const cltype=wedata[14].precipType;
-   const cldate=wedata[14].sunriseTimeLocal;
-   
-   const date = new Date(cldate);
+   const temp=wedata[sz-1].temperature;
+   const cltype=wedata[sz-1].precipType;
+   const cldate=wedata[sz-1].validTimeUtc;
+   const formatDate = (externalDate) => {
+    
+    return new Date(externalDate).toDateString()
+  };
+   const date = new Date(cldate * 1000); 
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const formattedDate = formatDate(`${year}-${month}-${day}`);
  
-   const day = date.getDate();
    const raindata = {
      labels: wedata.map((value)=>{
       const unixTimestamp = value.validTimeUtc;
@@ -40,21 +43,21 @@ const Weather=(props)=>{
        },
      ],
    };
-   const weekdayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-   const months=["","Jan","Feb","March","Apr","May","June","July","Aug","Sep","Oct","Nov","Dec"];
-   const weekday = weekdayNames[date.getDay()-4];
-   const year = date.getFullYear();
+  //  const weekdayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  //  const months=["","Jan","Feb","March","Apr","May","June","July","Aug","Sep","Oct","Nov","Dec"];
+  //  const weekday = weekdayNames[date.getDay()-4];
+  //  const year = date.getFullYear();
  
-   console.log(date.getDay())
+  //  console.log(date.getDay())
  
-   const formattedDate = `${day} ${weekday}, ${year}`;
+  //  const formattedDate = `${day} ${weekday}, ${year}`;
   
  
      return(<>
  <View style={styles.wecontainer}>
    <View style={styles.mainwc1}>
    <View  style={styles.wc1}> 
-   <Text>Today</Text>
+   <Text style={{color:"white"}}>Today</Text>
        <Text style={styles.todayTempText}>{temp[8]}{temp[9]}` -{temp[1]}{temp[2]}`C</Text></View>
       
     
@@ -67,8 +70,8 @@ const Weather=(props)=>{
        </View> 
        
        </View><View  style={styles.secwc1}>
-       <Text>Humidity: {wedata[14].relativeHumidity}%</Text>
-       <Text style={{width:300, textAlign:'center'}}>{wedata[14].narrative}</Text>
+       <Text style={{color:"white"}}>Humidity: {wedata[14].relativeHumidity}%</Text>
+       <Text style={{width:300, textAlign:'center',color:"white"}}>{wedata[14].narrative}</Text>
        </View>
        <View  style={{paddingTop:15}}>
          <Text style={styles.temhead}>Temperature</Text>
@@ -78,9 +81,20 @@ const Weather=(props)=>{
   data={wedata}
   keyExtractor={(item, index) => index.toString()} // Adding a keyExtractor
   contentContainerStyle={{ paddingRight: 20 }} // Adjusting container style for right padding
-  renderItem={({ item }) => (
+  renderItem={({ item }) =>{ 
+
+    const anydt=item.validTimeUtc;
+   
+    const datein = new Date(anydt * 1000); 
+   const yearin = datein.getFullYear();
+   const monthee = String(datein.getMonth() + 1).padStart(2, '0');
+   const daye = String(datein.getDate()).padStart(2, '0');
+   const formee = formatDate(`${yearin}-${monthee}-${daye}`);
+
+    
+    return(
     <View style={{ marginRight: 20, alignItems: 'center' }}>
-      <Text>
+  <Text style={{color:"white"}}>
         {item.temperature[8]}
         {item.temperature[9]}` -{item.temperature[1]}
         {item.temperature[2]}`C
@@ -99,19 +113,13 @@ const Weather=(props)=>{
           marginBottom: 8,
         }}
       />
-      <Text>
-        {item.sunriseTimeLocal[8]}
-        {item.sunriseTimeLocal[9]}{' '}
-        {item.sunriseTimeLocal[5] === '0'
-          ? months[item.sunriseTimeLocal[6]]
-          : item.sunriseTimeLocal[6] === '1'
-          ? months[11]
-          : months[12]}
+      <Text style={{color:"white"}}>
+       {formee}
       </Text>
-      <Icon name="flag" size={12} color="black" />
-      <Text>{item.WindSpeed} m/s</Text>
+      <Icon name="flag" size={12} color="white" />
+      <Text style={{color:"white"}}>{item.WindSpeed} m/s</Text>
     </View>
-  )}
+  )}}
 />
 
        
@@ -119,16 +127,17 @@ const Weather=(props)=>{
  
        <View >
          <Text style={styles.temhead}>Rainfall</Text>
+         <ScrollView horizontal>
          <LineChart
          data={raindata}
-         width={280}
+         width={1200}
          height={120}
          chartConfig={{
            backgroundGradientFrom: 'skyblue',
            backgroundGradientTo: 'skyblue',
            decimalPlaces: 2,
-           color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-           labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+           color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+           labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
            propsForDots: {
              r: '6',
              strokeWidth: '2',
@@ -140,7 +149,7 @@ const Weather=(props)=>{
          xLabelsOffset={-10} 
          fromZero
          yAxisInterval={10} 
-       />
+       /></ScrollView>
          
        </View>
         </View>
@@ -248,7 +257,7 @@ const Weather=(props)=>{
       textAlign:'center'
     },
     wecontainer: {
-     
+     color:"white"
     },
     flaitem:
     {
@@ -287,7 +296,8 @@ const Weather=(props)=>{
     },
     dt:
     {
-  paddingLeft:60
+  paddingLeft:60,
+  color:"white"
     },
   
     climage:
@@ -319,7 +329,7 @@ const Weather=(props)=>{
       paddingLeft:10,
       alignContent:'center',
       alignItems:'center',
-      
+      color:"white"
     },
     todayTempText: {
       fontSize: 26,

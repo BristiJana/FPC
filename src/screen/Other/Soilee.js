@@ -77,22 +77,23 @@ const [loading, setLoading] = useState(true);
 
 const handleget = async (value)=>{
  
-  
-   
   try {
-    const url = value.zonalStats.sm
+    const url = value.zonalStats.sm;
     const response = await axios.get(url);
-  console.log(response.data)
-  const parsedData = response.data;
-    
-    return parsedData;
- }
- 
-  
- catch (error) {
-  console.log(`Error fetching data: ${error}`);
-  return null;
-}
+    console.log("handle get ", response.data);
+    const parsedDataArray = response.data;
+
+    // Check if the response data array is not empty
+    if (parsedDataArray && parsedDataArray.length > 0) {
+      const meanValue = parseFloat(parsedDataArray[0].mean);
+      return meanValue;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.log(`Error fetching data: ${error}`);
+    return null;
+  }
 
 }
     const sldata = {
@@ -108,14 +109,15 @@ const handleget = async (value)=>{
       
       datasets: [
         {
-          data: [45,89,0,12,78,89,55,78,122,45],
+          // data: [45,89,0,12,78,89,55,78,122,45],
           
-          // soildata.map((value) => {
-          //   const dataFromHandleGet = handleget(value);
-          //   console.log("Data from handleget:", dataFromHandleGet);
-          //   const meanValues = dataFromHandleGet.map(item => parseFloat(item.mean));
-          //   return (meanValues)
-          // }),
+          data:soildata.map((value) => {
+            const dataFromHandleGet = handleget(value);
+            console.log("hey")
+            console.log("Data from handleget:", dataFromHandleGet);
+            // const meanValues = dataFromHandleGet.map(item => parseFloat(item.mean));
+            return (0)
+          }),
 
           color: (opacity = 1) => `rgba(0, 255, 0, ${opacity})`, 
           strokeWidth: 2,
