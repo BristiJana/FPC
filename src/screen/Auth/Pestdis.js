@@ -89,7 +89,7 @@ const Pestdis = () => {
           <View style={styles.item}>
             {selectedOption === 'option1' ? (<>
              
-            { item.hasOwnProperty("Disease_img_url")?(item.Disease_img_url.length):(0)> 0 && (<>
+            { item.Disease_img_url.length> 0 && (<>
            <Carousel
         ref={isCarousel}
         data={item.hasOwnProperty("Disease_img_url")?(item.Disease_img_url):([])}
@@ -147,7 +147,7 @@ const Pestdis = () => {
             ) : (
               <>
              
-                {item.hasOwnProperty("Pest_img_url")?(item.Pest_img_url.length):(0) > 0 && (<>
+                {item.Pest_img_url.length > 0 && (<>
            <Carousel
         ref={isCarousel}
         data={item.hasOwnProperty("Pest_img_url")?item.Pest_img_url:[]}

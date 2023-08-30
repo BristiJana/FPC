@@ -8,6 +8,19 @@ const Uploadpage = (props) => {
   return (
     <View style={styles.container}>
       <Text style={styles.texti}>Please upload a image of crop/farm which has any issues, to get the advisory.</Text>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={{
+          position: 'absolute',
+          bottom: 20,
+          right: 20,
+          backgroundColor: 'rgba(0, 0, 0, 0.3)',
+          padding: 10,
+          borderRadius: 25,
+        }}
+      >
+        <Icon name="arrow-left" size={20} color="white" />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -30,3 +43,4 @@ const styles = StyleSheet.create({
 });
 
 export default Uploadpage;
+

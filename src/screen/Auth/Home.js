@@ -10,7 +10,7 @@ import {
   ImageBackground,
   Image,Animated, Easing,ActivityIndicator
 } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { useRoute,useFocusEffect } from '@react-navigation/native';
 import TextTicker from 'react-native-text-ticker';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -32,6 +32,10 @@ const Home = (props) => {
   const [showPopup, setShowPopup] = useState(false);
   const [lisdata, setlisdata] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  
+
+
 
   
   const translateX = useRef(new Animated.Value(-300)).current;
@@ -110,7 +114,17 @@ const Home = (props) => {
       <FlatList
         data={lisdata}
         keyExtractor={(item) => item.FarmID}
-        renderItem={({ item }) => (
+        renderItem={({ item }) =>{ 
+          
+          const today = new Date();
+  const given = new Date(item.sowingdate);
+
+  // Calculate the time difference in milliseconds
+  const timeDifference = given - today;
+
+  // Convert milliseconds to days
+  const daysDifference = Math.abs(Math.floor(timeDifference / (1000 * 60 * 60 * 24)));
+          return (
          <TouchableOpacity onPress={()=>{props.navigation.navigate("Report", {
           FarmID: item.FarmID,
           Type:item.croptype})}}>
@@ -140,7 +154,7 @@ const Home = (props) => {
       <Icon name="ellipsis-v" size={20} color="black" /></View>
       <Text style={styles.farmsm}>{item.sowingdate}</Text>
       
-      <Text style={styles.farmarc}>Days of Sowing</Text></View>
+      <Text style={styles.farmarc}>{daysDifference} Days of Sowing</Text></View>
       </View>
       <View style={styles.scrollBox}>
       <TextTicker
@@ -159,7 +173,7 @@ const Home = (props) => {
     
     </View>
           </View></TouchableOpacity>
-        )}
+        )}}
       />
 
       <Modal isVisible={showPopup} backdropOpacity={0.5}>
@@ -197,8 +211,9 @@ const styles = StyleSheet.create({
   },
   farmlast:
   {
-marginTop:3,
-marginLeft:32
+position:'absolute',
+top:3,
+right:2
   },
   mpst:
   {

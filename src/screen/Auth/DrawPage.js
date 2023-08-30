@@ -65,7 +65,8 @@ setdtVal(newValue);
   const [showPopup1, setShowPopup1] = useState(false);
   const [selectedValue, setSelectedValue] = useState('option1');
   const [predictions, setPredictions] = useState([]);
-  
+  const searchTextInputRef = useRef(null); 
+
   const fincord = coordinates.map((coord) => [parseFloat(coord.longitude.toFixed(14)),
     parseFloat(coord.latitude.toFixed(15))]);
     const firstCoordinate = fincord[0];
@@ -78,6 +79,7 @@ fincord.push(firstCoordinate);
 
   const handleItemPress = (item) => {
     setSearchQuery(item.place_name);
+    
     setIsFlatListVisible(!isFlatListVisible); 
   };
 
@@ -351,6 +353,7 @@ fincord.push(firstCoordinate);
         
           <View style={styles.userNamePopup}>
           <Text style={styles.popupTitle}>Details</Text>
+          
           <TextInput
             style={styles.popupInput}
             placeholder="Name"
@@ -502,10 +505,12 @@ fincord.push(firstCoordinate);
         
         <TextInput
           style={styles.searchInput}
+          ref={searchTextInputRef}
           placeholder="Search by name"
           value={searchQuery}
           onChangeText={handleSearchQueryChange}
           placeholderTextColor="#888"
+          onSubmitEditing={handleShowCoordinates}
         />
        </View>
        {isFlatListVisible && (
@@ -593,7 +598,19 @@ fincord.push(firstCoordinate);
      
         </>
       )}
-      
+       <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={{
+          position: 'absolute',
+          bottom: 20,
+          right: 20,
+          backgroundColor: 'rgba(0, 0, 0, 0.3)',
+          padding: 10,
+          borderRadius: 25,
+        }}
+      >
+        <Icon name="arrow-left" size={20} color="white" />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -806,7 +823,7 @@ const styles = StyleSheet.create({
     right: 20,
     backgroundColor: '#FFF',
     borderRadius: 5,
-    padding: 10,
+    padding: 1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -817,7 +834,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    
   },
   
   icon: {
@@ -844,8 +861,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#000',
     backgroundColor:"white",
-    marginTop:10,
-    marginBottom:10,
+   
     color:"grey"
 
   },

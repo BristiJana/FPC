@@ -110,6 +110,19 @@ const Report = (props) => {
           
           />}
      </ScrollView>
+     <TouchableOpacity
+        onPress={() => props.navigation.goBack()}
+        style={{
+          position: 'absolute',
+          bottom: 20,
+          right: 20,
+          backgroundColor: 'rgba(0, 0, 0, 0.3)',
+          padding: 10,
+          borderRadius: 25,
+        }}
+      >
+        <Icon name="arrow-left" size={20} color="white" />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

@@ -7,7 +7,7 @@ import Carousel from 'react-native-snap-carousel';
 import { Button } from 'react-native-paper';
 
 import DatePicker from 'react-native-date-picker';
-
+import { CalendarList } from "react-native-calendars";
 
 
 const Soilee=(props)=>
@@ -20,10 +20,14 @@ const [selectedImageUrl, setSelectedImageUrl] = useState(null);
 const[showPicker,setShowPicker]=useState(false)
 const [chartData, setChartData] = useState([]);
 const[dateTodisplay,setToDisplay]=useState("");
+const [highlightedDates, setHighlightedDates] = useState([]);
 
+  // Filter dates to highlight based on selectedImageUrl
+  const highlightedDatesList = soildata.filter(data => data.png.sm !== 'None');
+  const highlightedDateStrings = highlightedDatesList.map(data => data.Date);
 
 const handleDateSelect = date => {
-  setSelectedDate(date);
+   setSelectedDate(date);
   
   const imageUrlByDate = {};
   soildata.forEach(data => {
@@ -43,6 +47,25 @@ const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padSt
 
 
 const [loading, setLoading] = useState(true);
+const [markedDates, setMarkedDates] = useState({}); // Store marked dates here
+
+  useEffect(() => {
+    const markedDatesData = {};
+    soildata.forEach((data) => {
+      if (data.png.sm !== 'None') {
+       
+        console.log(data.png.sm)
+        console.log(data.Date)
+        const date = new Date(data.Date);
+const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+console.log(formattedDate)
+        markedDatesData[formattedDate] = { marked: true };
+      }
+    });
+    console.log(markedDatesData)
+    setMarkedDates(markedDatesData);
+  }, [soildata]);
+
 
   // useEffect(() => {
   //   const fetchChartData = async () => {
@@ -134,15 +157,22 @@ const handleget = async (value)=>{
       ],
     };
   
-  const sz=soildata.length-1;
-    const url=soildata[sz].png
-    // const urlag=soildata[sz].zonalStats
-    const srcimg=url.sm
-    const curr=soildata[sz].Date
-    const dateee = new Date(curr);
-    const formattedDateee = `${dateee.getFullYear()}-${String(dateee.getMonth() + 1).padStart(2, '0')}-${String(dateee.getDate()).padStart(2, '0')}`;
-    console.log(srcimg)
+  
     
+    const sz = soildata.length - 1;
+const today = new Date();
+const todayFormatted = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+// Find if there's a PNG image available for today's date
+const todayImageData = soildata.find(data => {
+  const date = new Date(data.Date);
+  const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  return formattedDate === todayFormatted && data.png.sm !== 'None';
+});
+
+// Assign the appropriate srcimg value
+const srcimg = todayImageData ? todayImageData.png.sm : 'None';
+    console.log(srcimg)
     const last6Objects = soildata.slice(-6);
     
     const renderCard = ({ item }) =>{
@@ -158,18 +188,18 @@ const handleget = async (value)=>{
       <View style={styles.card}>
         
         <Text style={{marginBottom:5,color:'black'}}>{ftr}</Text>
-        {itimg =='None'?(<Text style={{color:"black",textAlign:'center',alignSelf:"center"}}>Nothing to display</Text>):(<Image source={{ uri: itimg }} style={{ width:120,height:120}} />)}
+        {itimg =="None"?(<Text style={{color:"black",textAlign:'center',alignSelf:"center"}}>Nothing to display</Text>):(<Image source={{ uri: itimg }} style={{ width:120,height:120}} />)}
         {/* Add more Text components for other key values */}
       </View>
     );}
     
     return (<>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' ,marginTop:50}}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' , marginTop: selectedImageUrl !== null ? 140 : 50}}>
         <View style={{flexDirection:'row',justifyContent:'space-between'}}>
       <TouchableOpacity onPress={() => setShowPicker(!showPicker)}>
       <Icon name="calendar" style={styles.calIcon} />
       </TouchableOpacity>
-      <Text style={{ color:"black",marginLeft:20,marginTop:3}}>{dateTodisplay==""?formattedDateee:dateTodisplay}</Text>
+      <Text style={{ color:"black",marginLeft:20,marginTop:3}}>{dateTodisplay==""?todayFormatted:dateTodisplay}</Text>
       <TouchableOpacity onPress={() => setShowsmPopup(true)}>
       <Icon name="ellipsis-v" style={{ marginTop:1,
     
@@ -178,16 +208,21 @@ const handleget = async (value)=>{
     
     </View>
       {showPicker && (
+        <Modal animationType="slide" transparent visible={showPicker}>
+       <ScrollView horizontal>
+          <View style={styles.pickerContainer}>
+            
+          <CalendarList
+         current={selectedDate}
+         markedDates={markedDates} // Set marked dates
+         onDayPress={(day) => {
+           handleDateSelect(new Date(day.dateString));
+           setShowPicker(false);
+         }}
+        />
+          </View></ScrollView>
         
-       
-       
-     
-        <DatePicker
-        date={selectedDate}
-        mode="date"
-        style={styles.datePicker}
-        onDateChange={handleDateSelect}
-      />
+      </Modal>
       )}
        {selectedImageUrl ? (
          selectedImageUrl =='None'?(<Text style={{color:"black",textAlign:'center',alignSelf:"center", marginTop:20}}>Nothing to display</Text>):(<Image source={{ uri: selectedImageUrl }} style={{ width: 300, height: 200 ,marginTop:20}} />)
@@ -264,6 +299,18 @@ const handleget = async (value)=>{
       alignItems: 'center',
       marginTop: 10,
     } ,
+    calIcon: {
+      marginTop: 1,
+      fontSize: 25,
+      color: 'green',
+      marginLeft: 20,
+    },
+    pickerContainer: {
+      backgroundColor: 'white',
+      borderRadius: 5,
+      paddingHorizontal: 20,
+      paddingVertical: 15,
+    width:380},
     row: {
       justifyContent: 'space-between',
     },

@@ -18,7 +18,7 @@ const Pest= (props)=>
 {
   
     const pesdata= props.pesdata
-    const iter= pesdata.hasOwnProperty("Disease_img_url")?pesdata[0].Disease_img_url:[];
+    const iter= pesdata[0].Disease_img_url
     const [index, setIndex] = useState(0);
     const isCarousel = useRef(null);
     const [showsmPopup, setShowsmPopup] = useState(false);
